@@ -54,7 +54,7 @@ public class SecurityConfig {
                 List.of(
                         new SecurityContextHolderFilter(),
                         new GitHubLoginRedirectFilter(securityOAuth2Properties),
-                        new OAuth2LoginAuthenticationFilter(),
+                        new OAuth2LoginAuthenticationFilter(securityOAuth2Properties),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
                         new AuthorizationFilter(requestAuthorizationManager())

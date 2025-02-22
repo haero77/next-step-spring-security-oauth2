@@ -1,23 +1,22 @@
 package nextstep.security.authentication;
 
+import org.springframework.util.Assert;
+
 import java.util.Set;
 
 public class OAuth2AuthenticationToken implements Authentication {
 
-    private final String authorizationCode;
+    private final ClientRegistration clientRegistration;
     private final boolean authenticated;
 
-    private OAuth2AuthenticationToken(String authorizationCode, boolean authenticated) {
-        this.authorizationCode = authorizationCode;
+    private OAuth2AuthenticationToken(ClientRegistration clientRegistration, boolean authenticated) {
+        Assert.notNull(clientRegistration, "clientRegistration cannot be null");
+        this.clientRegistration = clientRegistration;
         this.authenticated = authenticated;
     }
 
-    public static OAuth2AuthenticationToken unauthenticated(String authorizationCode) {
-        return new OAuth2AuthenticationToken(authorizationCode, false);
-    }
-
-    public static OAuth2AuthenticationToken authenticated(OAuth2AuthenticationToken token) {
-        return new OAuth2AuthenticationToken(token.authorizationCode, true);
+    public static OAuth2AuthenticationToken unauthenticated(ClientRegistration clientRegistration) {
+        return new OAuth2AuthenticationToken(clientRegistration, false);
     }
 
     @Override
@@ -38,5 +37,17 @@ public class OAuth2AuthenticationToken implements Authentication {
     @Override
     public Set<String> getAuthorities() {
         return null;
+    }
+
+    public ClientRegistration getClientRegistration() {
+        return clientRegistration;
+    }
+
+    public record ClientRegistration(
+            String clientId,
+            String clientSecret,
+            String authorizationCode
+    ) {
+
     }
 }

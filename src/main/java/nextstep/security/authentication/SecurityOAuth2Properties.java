@@ -19,17 +19,16 @@ public class SecurityOAuth2Properties {
         return github;
     }
 
-    public static final class GitHub {
+    public record GitHub(
+            String domain,
+            String clientId,
+            String clientSecret
+    ) {
 
-        private final String clientId;
-
-        public GitHub(String clientId) {
+        public GitHub {
+            Assert.hasText(domain, "domain must have text");
             Assert.hasText(clientId, "clientId must have text");
-            this.clientId = clientId;
-        }
-
-        public String getClientId() {
-            return clientId;
+            Assert.hasText(clientSecret, "clientSecret must have text");
         }
     }
 }
