@@ -30,10 +30,12 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    private final SecurityOAuth2Properties oAuth2Properties;
 
-    public OAuth2LoginAuthenticationFilter() {
+    public OAuth2LoginAuthenticationFilter(SecurityOAuth2Properties oAuth2Properties) {
+        this.oAuth2Properties = oAuth2Properties;
         this.authenticationManager = new ProviderManager(
-                List.of(new OAuth2AuthenticationProvider())
+                List.of(new OAuth2AuthenticationProvider(oAuth2Properties))
         );
     }
 
@@ -64,8 +66,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
         }
 
         try {
-            Authentication authRequest = OAuth2AuthenticationToken.unauthenticated(authorizationCode);
-            Authentication authResult = this.authenticationManager.authenticate(authRequest);
+            Authentication authResult = attemptAuthentication(authorizationCode);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authResult);
@@ -77,5 +78,17 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             logger.info("Authentication failed: {}", e.getMessage());
             response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
         }
+    }
+
+    private Authentication attemptAuthentication(String authorizationCode) {
+        Authentication authRequest = OAuth2AuthenticationToken.unauthenticated(
+                new OAuth2AuthenticationToken.ClientRegistration(
+                        oAuth2Properties.getGithub().clientId(),
+                        oAuth2Properties.getGithub().clientSecret(),
+                        authorizationCode
+                )
+        );
+
+        return this.authenticationManager.authenticate(authRequest);
     }
 }

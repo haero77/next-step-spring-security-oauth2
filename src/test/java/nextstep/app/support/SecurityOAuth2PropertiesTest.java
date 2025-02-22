@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 class SecurityOAuth2PropertiesTest {
@@ -15,8 +16,11 @@ class SecurityOAuth2PropertiesTest {
 
     @Test
     void load_github_credentials_from_profiles() {
-        // given
-        String githubClientId = sut.getGithub().getClientId();
-        assertThat(githubClientId).isEqualTo("test-github-client-id");
+        SecurityOAuth2Properties.GitHub github = sut.getGithub();
+
+        assertAll(
+                () -> assertThat(github.clientId()).isEqualTo("test-github-client-id"),
+                () -> assertThat(github.clientSecret()).isEqualTo("test-github-client-secret")
+        );
     }
 }

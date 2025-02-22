@@ -6,5 +6,6 @@ spring:
 security:
   oauth2:
     github:
+      domain: http://localhost:8089
       client-id: "test-github-client-id"
-
+      client-secret: "test-github-client-secret"

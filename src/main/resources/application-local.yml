@@ -6,4 +6,6 @@ spring:
 security:
   oauth2:
     github:
-      client-id: {OAUTH2_GITHUB_CLIENT_ID}
+      domain: https://github.com
+      client-id: ${OAUTH2_GITHUB_CLIENT_ID}
+      client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET}
