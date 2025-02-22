@@ -1,5 +1,6 @@
-package nextstep.security.authentication;
+package nextstep.security.oauth2;
 
+import nextstep.security.authentication.Authentication;
 import org.springframework.util.Assert;
 
 import java.util.Set;

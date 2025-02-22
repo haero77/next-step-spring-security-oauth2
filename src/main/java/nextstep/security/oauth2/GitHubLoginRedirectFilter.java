@@ -1,4 +1,4 @@
-package nextstep.security.authentication;
+package nextstep.security.oauth2;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

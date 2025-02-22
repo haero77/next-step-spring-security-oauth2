@@ -1,6 +1,8 @@
-package nextstep.security.authentication;
+package nextstep.security.oauth2;
 
-import nextstep.security.oauth2.AccessTokenResponse;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationException;
+import nextstep.security.authentication.AuthenticationProvider;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
