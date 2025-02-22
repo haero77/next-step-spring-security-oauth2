@@ -1,6 +1,6 @@
 package nextstep.app;
 
-import nextstep.app.support.SecurityOAuth2Properties;
+import nextstep.security.authentication.SecurityOAuth2Properties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
