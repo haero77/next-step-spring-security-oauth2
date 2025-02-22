@@ -1,4 +1,4 @@
-package nextstep.app.support;
+package nextstep.security.authentication;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.NonNull;
