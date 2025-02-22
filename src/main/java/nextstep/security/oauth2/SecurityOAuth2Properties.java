@@ -1,4 +1,4 @@
-package nextstep.security.authentication;
+package nextstep.security.oauth2;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.lang.NonNull;

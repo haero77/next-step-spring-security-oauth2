@@ -2,7 +2,7 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.authentication.SecurityOAuth2Properties;
+import nextstep.security.oauth2.SecurityOAuth2Properties;
 import nextstep.security.access.AnyRequestMatcher;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcherEntry;
@@ -15,6 +15,8 @@ import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.context.SecurityContextHolderFilter;
+import nextstep.security.oauth2.GitHubLoginRedirectFilter;
+import nextstep.security.oauth2.OAuth2LoginAuthenticationFilter;
 import nextstep.security.userdetails.UserDetails;
 import nextstep.security.userdetails.UserDetailsService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
