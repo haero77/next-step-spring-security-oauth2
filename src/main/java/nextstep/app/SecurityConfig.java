@@ -2,6 +2,7 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.app.support.SecurityOAuth2Properties;
 import nextstep.security.access.AnyRequestMatcher;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcherEntry;
@@ -18,6 +19,7 @@ import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.context.SecurityContextHolderFilter;
 import nextstep.security.userdetails.UserDetails;
 import nextstep.security.userdetails.UserDetailsService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Set;
 
 @EnableAspectJAutoProxy
+@EnableConfigurationProperties({SecurityOAuth2Properties.class})
 @Configuration
 public class SecurityConfig {
 

@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: local
+
+security:
+  oauth2:
+    github:
+      client-id: {OAUTH2_GITHUB_CLIENT_ID}

@@ -1,0 +1,10 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+
+security:
+  oauth2:
+    github:
+      client-id: "test-github-client-id"
+
