@@ -8,10 +8,7 @@ import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcherEntry;
 import nextstep.security.access.hierarchicalroles.RoleHierarchy;
 import nextstep.security.access.hierarchicalroles.RoleHierarchyImpl;
-import nextstep.security.authentication.AuthenticationException;
-import nextstep.security.authentication.BasicAuthenticationFilter;
-import nextstep.security.authentication.GitHubLoginRedirectFilter;
-import nextstep.security.authentication.UsernamePasswordAuthenticationFilter;
+import nextstep.security.authentication.*;
 import nextstep.security.authorization.*;
 import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.DelegatingFilterProxy;
@@ -57,6 +54,7 @@ public class SecurityConfig {
                 List.of(
                         new SecurityContextHolderFilter(),
                         new GitHubLoginRedirectFilter(securityOAuth2Properties),
+                        new OAuth2LoginAuthenticationFilter(),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
                         new AuthorizationFilter(requestAuthorizationManager())
