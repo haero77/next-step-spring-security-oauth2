@@ -10,6 +10,7 @@ import nextstep.security.access.hierarchicalroles.RoleHierarchy;
 import nextstep.security.access.hierarchicalroles.RoleHierarchyImpl;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.authentication.BasicAuthenticationFilter;
+import nextstep.security.authentication.GitHubLoginRedirectFilter;
 import nextstep.security.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.security.authorization.*;
 import nextstep.security.config.DefaultSecurityFilterChain;
@@ -41,8 +42,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DelegatingFilterProxy delegatingFilterProxy() {
-        return new DelegatingFilterProxy(new FilterChainProxy(List.of(securityFilterChain())));
+    public DelegatingFilterProxy delegatingFilterProxy(SecurityFilterChain securityFilterChain) {
+        return new DelegatingFilterProxy(new FilterChainProxy(List.of(securityFilterChain)));
     }
 
     @Bean
@@ -51,10 +52,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain() {
+    public SecurityFilterChain securityFilterChain(SecurityOAuth2Properties securityOAuth2Properties) {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new SecurityContextHolderFilter(),
+                        new GitHubLoginRedirectFilter(securityOAuth2Properties),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
                         new AuthorizationFilter(requestAuthorizationManager())
