@@ -33,10 +33,10 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     private final SecurityOAuth2Properties oAuth2Properties;
 
-    public OAuth2LoginAuthenticationFilter(SecurityOAuth2Properties oAuth2Properties) {
+    public OAuth2LoginAuthenticationFilter(SecurityOAuth2Properties oAuth2Properties, OAuth2UserService userService) {
         this.oAuth2Properties = oAuth2Properties;
         this.authenticationManager = new ProviderManager(
-                List.of(new OAuth2AuthenticationProvider(oAuth2Properties))
+                List.of(new OAuth2AuthenticationProvider(oAuth2Properties, userService))
         );
     }
 

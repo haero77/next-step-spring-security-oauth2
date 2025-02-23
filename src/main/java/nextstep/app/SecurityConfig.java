@@ -2,6 +2,7 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
+import nextstep.security.oauth2.OAuth2UserService;
 import nextstep.security.oauth2.SecurityOAuth2Properties;
 import nextstep.security.access.AnyRequestMatcher;
 import nextstep.security.access.MvcRequestMatcher;
@@ -51,12 +52,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(SecurityOAuth2Properties securityOAuth2Properties) {
+    public SecurityFilterChain securityFilterChain(SecurityOAuth2Properties securityOAuth2Properties, OAuth2UserService oAuth2UserService) {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new SecurityContextHolderFilter(),
                         new GitHubLoginRedirectFilter(securityOAuth2Properties),
-                        new OAuth2LoginAuthenticationFilter(securityOAuth2Properties),
+                        new OAuth2LoginAuthenticationFilter(securityOAuth2Properties, oAuth2UserService),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
                         new AuthorizationFilter(requestAuthorizationManager())

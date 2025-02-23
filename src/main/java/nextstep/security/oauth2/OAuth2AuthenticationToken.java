@@ -7,17 +7,22 @@ import java.util.Set;
 
 public class OAuth2AuthenticationToken implements Authentication {
 
+    private final String principal;
     private final ClientRegistration clientRegistration;
     private final boolean authenticated;
 
-    private OAuth2AuthenticationToken(ClientRegistration clientRegistration, boolean authenticated) {
-        Assert.notNull(clientRegistration, "clientRegistration cannot be null");
+    private OAuth2AuthenticationToken(String principal, ClientRegistration clientRegistration, boolean authenticated) {
+        this.principal = principal;
         this.clientRegistration = clientRegistration;
         this.authenticated = authenticated;
     }
 
     public static OAuth2AuthenticationToken unauthenticated(ClientRegistration clientRegistration) {
-        return new OAuth2AuthenticationToken(clientRegistration, false);
+        return new OAuth2AuthenticationToken(null, clientRegistration, false);
+    }
+
+    public static OAuth2AuthenticationToken authenticated(String principal) {
+        return new OAuth2AuthenticationToken(principal, null, true);
     }
 
     @Override
@@ -27,7 +32,7 @@ public class OAuth2AuthenticationToken implements Authentication {
 
     @Override
     public Object getPrincipal() {
-        return null;
+        return this.principal;
     }
 
     @Override

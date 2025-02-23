@@ -2,6 +2,7 @@ package nextstep.app;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.tomakehurst.wiremock.client.WireMock;
 import jakarta.servlet.http.HttpSession;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
@@ -36,7 +37,7 @@ class OAuth2LoginAuthenticationFilterTest {
     @BeforeEach
     void setupMockServer() throws Exception {
         stubForAccessToken();
-//        stubForUser();
+        stubForGitHubUser();
     }
 
     @Test
@@ -56,7 +57,7 @@ class OAuth2LoginAuthenticationFilterTest {
                     assertThat(context).isNotNull();
                     assertThat(context.getAuthentication()).isNotNull();
                     assertThat(context.getAuthentication().isAuthenticated()).isTrue();
-//                    assertThat(context.getAuthentication().getPrincipal()).isEqualTo("a@a.com");
+                    assertThat(context.getAuthentication().getPrincipal()).isEqualTo("github_999");
                 });
     }
 
@@ -66,22 +67,23 @@ class OAuth2LoginAuthenticationFilterTest {
         responseBody.put("token_type", "bearer");
         String jsonResponse = new ObjectMapper().writeValueAsString(responseBody);
 
-        stubFor(post(urlPathEqualTo("/login/oauth/access_token"))
+        stubFor(WireMock.post(urlPathEqualTo("/login/oauth/access_token"))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withBody(jsonResponse)));
     }
 
-//    private void stubForUser() throws JsonProcessingException {
-//        Map<String, String> userProfile = new HashMap<>();
-//        userProfile.put("email", "a@a.com");
-//        userProfile.put("name", "a");
-//        userProfile.put("avatar_url", "");
-//        String profileJsonResponse = new ObjectMapper().writeValueAsString(userProfile);
-//
-//        stubFor(get(urlEqualTo("/user"))
-//                .willReturn(aResponse()
-//                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
-//                        .withBody(profileJsonResponse)));
-//    }
+    private void stubForGitHubUser() throws JsonProcessingException {
+        Map<String, String> userProfile = new HashMap<>();
+        userProfile.put("login", "a");
+        userProfile.put("id", "999");
+        userProfile.put("email", "a@a.com");
+        userProfile.put("avatar_url", "");
+        String profileJsonResponse = new ObjectMapper().writeValueAsString(userProfile);
+
+        stubFor(WireMock.get(urlPathMatching("/user"))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withBody(profileJsonResponse)));
+    }
 }

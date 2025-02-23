@@ -24,9 +24,14 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final SecurityOAuth2Properties securityProperties;
+    private final OAuth2UserService userService;
 
-    public OAuth2AuthenticationProvider(SecurityOAuth2Properties securityProperties) {
+    public OAuth2AuthenticationProvider(
+            SecurityOAuth2Properties securityProperties,
+            OAuth2UserService userService
+    ) {
         this.securityProperties = securityProperties;
+        this.userService = userService;
     }
 
     @Override
@@ -42,12 +47,10 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
         AccessTokenResponse accessToken = exchangeCodeToAccessToken(token);
 
         // Step2: Query user info from OAuth2 Provider using via access token
-        OAuth2UserInfo userInfo = getUserInfo(accessToken);
+        GitHubUserInfo userInfo = getUserInfo(accessToken);
+        OAuth2User oAuth2User = this.userService.loadUser(userInfo);
 
-        // todo process after query user info from OAuth2 Provider: create member if not exists
-
-        // todo create authenticated OAuth2AuthenticationToken
-        throw new UnsupportedOperationException();
+        return OAuth2AuthenticationToken.authenticated(oAuth2User.getName());
     }
 
     private AccessTokenResponse exchangeCodeToAccessToken(OAuth2AuthenticationToken token) {
