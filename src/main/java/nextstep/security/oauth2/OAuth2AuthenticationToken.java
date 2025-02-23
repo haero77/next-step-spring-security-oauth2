@@ -43,12 +43,4 @@ public class OAuth2AuthenticationToken implements Authentication {
     public ClientRegistration getClientRegistration() {
         return clientRegistration;
     }
-
-    public record ClientRegistration(
-            String clientId,
-            String clientSecret,
-            String authorizationCode
-    ) {
-
-    }
 }

@@ -83,7 +83,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
 
     private Authentication attemptAuthentication(String authorizationCode) {
         Authentication authRequest = OAuth2AuthenticationToken.unauthenticated(
-                new OAuth2AuthenticationToken.ClientRegistration(
+                new ClientRegistration(
                         oAuth2Properties.getGithub().clientId(),
                         oAuth2Properties.getGithub().clientSecret(),
                         authorizationCode

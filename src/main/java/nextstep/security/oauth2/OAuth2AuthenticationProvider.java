@@ -62,7 +62,7 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
     }
 
     private AccessTokenResponse requestAccessToken(OAuth2AuthenticationToken token) {
-        OAuth2AuthenticationToken.ClientRegistration client = token.getClientRegistration();
+        ClientRegistration client = token.getClientRegistration();
 
         URI accessTokenRequestUrl = UriComponentsBuilder.fromHttpUrl(generateGitHubAccessTokenRequestUrl())
                 .queryParam("client_id", client.clientId())
