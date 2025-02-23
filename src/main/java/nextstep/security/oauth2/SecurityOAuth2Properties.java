@@ -21,12 +21,14 @@ public class SecurityOAuth2Properties {
 
     public record GitHub(
             String domain,
+            String apiDomain,
             String clientId,
             String clientSecret
     ) {
 
         public GitHub {
             Assert.hasText(domain, "domain must have text");
+            Assert.hasText(apiDomain, "apiDomain must have text");
             Assert.hasText(clientId, "clientId must have text");
             Assert.hasText(clientSecret, "clientSecret must have text");
         }
