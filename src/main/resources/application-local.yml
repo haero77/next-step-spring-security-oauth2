@@ -7,5 +7,6 @@ security:
   oauth2:
     github:
       domain: https://github.com
+      api-domain: https://api.github.com
       client-id: ${OAUTH2_GITHUB_CLIENT_ID}
       client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET}
