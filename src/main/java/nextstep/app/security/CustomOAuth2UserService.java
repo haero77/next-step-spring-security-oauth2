@@ -2,26 +2,26 @@ package nextstep.app.security;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.oauth2.CustomOAuth2User;
-import nextstep.security.oauth2.GitHubUserInfo;
-import nextstep.security.oauth2.OAuth2User;
-import nextstep.security.oauth2.OAuth2UserService;
+import nextstep.security.oauth2.*;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
 @Service
-public class CustomOAuth2UserService implements OAuth2UserService {
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
-    public CustomOAuth2UserService(MemberRepository memberRepository) {
+    public CustomOAuth2UserService(MemberRepository memberRepository, SecurityOAuth2Properties oAuth2Properties) {
+        super(oAuth2Properties);
         this.memberRepository = memberRepository;
     }
 
     @Override
-    public OAuth2User loadUser(GitHubUserInfo gitHubUserInfo) {
-        String username = getFormattedUsername(gitHubUserInfo);
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) {
+        OAuth2User oAuth2User = super.loadUser(userRequest);
+
+        String username = getFormattedUsername(oAuth2User);
 
         Optional<Member> memberOpt = memberRepository.findByEmail(username);
         if (memberOpt.isPresent()) {
@@ -34,7 +34,7 @@ public class CustomOAuth2UserService implements OAuth2UserService {
         return new CustomOAuth2User(newMember.getEmail());
     }
 
-    private String getFormattedUsername(GitHubUserInfo gitHubUserInfo) {
-        return "github_%d".formatted(gitHubUserInfo.getId());
+    private String getFormattedUsername(OAuth2User oAuth2User) {
+        return "github_%s".formatted(oAuth2User.getName());
     }
 }

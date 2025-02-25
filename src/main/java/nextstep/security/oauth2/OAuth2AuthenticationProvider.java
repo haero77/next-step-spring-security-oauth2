@@ -43,12 +43,12 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
 
-        // Step1: Exchange code for an access token
         AccessTokenResponse accessToken = exchangeCodeToAccessToken(token);
 
-        // Step2: Query user info from OAuth2 Provider using via access token
-        GitHubUserInfo userInfo = getUserInfo(accessToken);
-        OAuth2User oAuth2User = this.userService.loadUser(userInfo);
+        OAuth2User oAuth2User = this.userService.loadUser(new OAuth2UserRequest(
+                token.getClientRegistration(),
+                new OAuth2AccessToken(accessToken.accessToken()))
+        );
 
         return OAuth2AuthenticationToken.authenticated(oAuth2User.getName());
     }
@@ -96,25 +96,5 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
 
     private String generateGitHubAccessTokenRequestUrl() {
         return "%s/login/oauth/access_token".formatted(securityProperties.getGithub().domain());
-    }
-
-    private GitHubUserInfo getUserInfo(AccessTokenResponse accessToken) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.setBearerAuth(accessToken.accessToken());
-        HttpEntity<Object> requestEntity = new HttpEntity<>(headers);
-
-        ResponseEntity<GitHubUserInfo> responseEntity = this.restTemplate.exchange(
-                this.securityProperties.getGithub().apiDomain() + "/user", // GitHub email이 public이 아닐 경우 email이 null로 리턴
-                GET,
-                requestEntity,
-                GitHubUserInfo.class
-        );
-        logger.info("User info response: {}", responseEntity);
-
-        GitHubUserInfo userInfo = responseEntity.getBody();
-        logger.info("User info: {}", userInfo);
-
-        return userInfo;
     }
 }
