@@ -12,7 +12,8 @@ import java.util.stream.Collectors;
 
 @Repository
 public class InmemoryMemberRepository implements MemberRepository {
-    private static final Map<String, Member> members = new HashMap<>();
+
+    private final Map<String, Member> members = new HashMap<>();
 
     @Override
     public Optional<Member> findByEmail(String email) {
