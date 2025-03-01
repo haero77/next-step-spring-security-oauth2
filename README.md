@@ -18,11 +18,27 @@
 
 ### 🚀 1-2단계 - 리팩터링 & OAuth 2.0 Resource 연동
 
-- [ ] 유저 정보 조회 책임을 `DefaultOAuth2UserService`로 위임
+- [x] 유저 정보 조회 책임을 `DefaultOAuth2UserService`로 위임
+- [x] 구글 로그인 구현 전 사전 리팩토링
+  - [x] OAuth2 인증 필터에서 인증 토큰에 provider 정보를 추가
+    - [x] Request URI에서 provider 정보 추출
+  - [x] OAuth2AuthenticationProvider에서 각 OAuth2 제공자에 맞게 액세스 토큰 취득
+    - [x] GitHub Client 구현
+  - [x] DefaultOAuth2UserService에서 각 OAuth2 제공자에 맞게 사용자 정보 조회
 - [ ] 구글 로그인 구현
-- [ ] 중복 코드 리팩터링
+  - [x] GoogleLoginRedirectFilter
+  - [x] GoogleClient 
+    - [x] 코드를 이용한 액세스 토큰 발급
+    - [x] 액세스 토큰을 이용한 사용자 정보 조회
+- [x] 실제 UI로 통합 테스트 진행
 
 ## 2단계
 
-// ... 
+
+// ...
+
+
+- [ ] 중복 코드 리팩터링
+  - [ ] redirect URI를 상수로 관리
+  - [ ] authorization URI를 환경변수로 관리
 
