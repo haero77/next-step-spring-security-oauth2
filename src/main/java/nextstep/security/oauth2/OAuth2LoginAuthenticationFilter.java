@@ -8,7 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcher;
-import nextstep.security.authentication.*;
+import nextstep.security.authentication.Authentication;
+import nextstep.security.authentication.AuthenticationException;
+import nextstep.security.authentication.AuthenticationManager;
+import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
@@ -21,6 +24,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.List;
 
+import static nextstep.security.oauth2.Oauth2Constants.*;
 import static org.springframework.http.HttpMethod.GET;
 
 public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
@@ -67,7 +71,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
         }
 
         try {
-            Authentication authResult = attemptAuthentication(authorizationCode);
+            Authentication authResult = attemptAuthentication(request, new OAuth2AuthorizationCode(authorizationCode));
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authResult);
@@ -81,15 +85,33 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
         }
     }
 
-    private Authentication attemptAuthentication(String authorizationCode) {
-        Authentication authRequest = OAuth2AuthenticationToken.unauthenticated(
-                new ClientRegistration(
-                        oAuth2Properties.getGithub().clientId(),
-                        oAuth2Properties.getGithub().clientSecret(),
-                        authorizationCode
-                )
-        );
-
+    private Authentication attemptAuthentication(HttpServletRequest request, OAuth2AuthorizationCode code) {
+        Authentication authRequest = generateUnAuthenticatedToken(request, code);
         return this.authenticationManager.authenticate(authRequest);
+    }
+
+    private OAuth2AuthenticationToken generateUnAuthenticatedToken(
+            HttpServletRequest request,
+            OAuth2AuthorizationCode code
+    ) {
+        String provider = getProvider(request);
+
+        if (provider.equals(GITHUB)) {
+            return OAuth2AuthenticationToken.unauthenticated(new ClientRegistration(oAuth2Properties.getGithub()), code);
+        }
+
+        if (provider.equals(GOOGLE)) {
+            return OAuth2AuthenticationToken.unauthenticated(new ClientRegistration(oAuth2Properties.getGoogle()), code);
+        }
+
+        throw new AuthenticationException("Provider '%s' is not supported".formatted(provider));
+    }
+
+    private String getProvider(HttpServletRequest request) {
+        String provider = request.getRequestURI().substring(LOGIN_CALL_BACK_URI_PREFIX.length());
+        if (!StringUtils.hasText(provider)) {
+            throw new AuthenticationException("Cannot extract provider from request URI");
+        }
+        return provider;
     }
 }

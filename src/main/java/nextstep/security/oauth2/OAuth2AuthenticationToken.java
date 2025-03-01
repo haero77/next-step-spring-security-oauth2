@@ -1,7 +1,6 @@
 package nextstep.security.oauth2;
 
 import nextstep.security.authentication.Authentication;
-import org.springframework.util.Assert;
 
 import java.util.Set;
 
@@ -9,20 +8,27 @@ public class OAuth2AuthenticationToken implements Authentication {
 
     private final String principal;
     private final ClientRegistration clientRegistration;
+    private final OAuth2AuthorizationCode authorizationCode;
     private final boolean authenticated;
 
-    private OAuth2AuthenticationToken(String principal, ClientRegistration clientRegistration, boolean authenticated) {
+    private OAuth2AuthenticationToken(
+            String principal,
+            ClientRegistration clientRegistration,
+            OAuth2AuthorizationCode authorizationCode,
+            boolean authenticated
+    ) {
         this.principal = principal;
         this.clientRegistration = clientRegistration;
+        this.authorizationCode = authorizationCode;
         this.authenticated = authenticated;
     }
 
-    public static OAuth2AuthenticationToken unauthenticated(ClientRegistration clientRegistration) {
-        return new OAuth2AuthenticationToken(null, clientRegistration, false);
+    public static OAuth2AuthenticationToken unauthenticated(ClientRegistration clientRegistration, OAuth2AuthorizationCode code) {
+        return new OAuth2AuthenticationToken(null, clientRegistration, code, false);
     }
 
     public static OAuth2AuthenticationToken authenticated(String principal) {
-        return new OAuth2AuthenticationToken(principal, null, true);
+        return new OAuth2AuthenticationToken(principal, null, null, true);
     }
 
     @Override
@@ -42,7 +48,7 @@ public class OAuth2AuthenticationToken implements Authentication {
 
     @Override
     public Set<String> getAuthorities() {
-        return null;
+        return null; // todo: fill authorities
     }
 
     public ClientRegistration getClientRegistration() {
