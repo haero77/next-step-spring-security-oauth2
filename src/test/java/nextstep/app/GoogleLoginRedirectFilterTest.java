@@ -1,7 +1,7 @@
 package nextstep.app;
 
 import nextstep.app.testsupport.BaseIntegrationTestSupport;
-import nextstep.security.oauth2.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;

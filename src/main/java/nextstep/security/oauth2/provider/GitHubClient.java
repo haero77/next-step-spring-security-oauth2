@@ -1,7 +1,11 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.provider;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import nextstep.security.authentication.AuthenticationException;
+import nextstep.security.oauth2.authentication.ClientRegistration;
+import nextstep.security.oauth2.authentication.OAuth2AccessToken;
+import nextstep.security.oauth2.authentication.OAuth2AuthorizationCode;
+import nextstep.security.oauth2.authentication.OAuth2User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -15,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static nextstep.security.oauth2.Oauth2Constants.GITHUB;
+import static nextstep.security.oauth2.provider.Oauth2Constants.GITHUB;
 
 public class GitHubClient implements OAuth2ProviderClient {
 

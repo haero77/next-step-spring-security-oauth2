@@ -1,4 +1,8 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.authentication;
+
+import nextstep.security.oauth2.provider.OAuth2Provider;
+import nextstep.security.oauth2.provider.OAuth2ProviderClient;
+import nextstep.security.oauth2.provider.OAuth2ProviderClientFactory;
 
 public class DefaultOAuth2UserService implements OAuth2UserService {
 

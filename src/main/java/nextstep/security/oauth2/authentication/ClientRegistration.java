@@ -1,4 +1,6 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.authentication;
+
+import nextstep.security.oauth2.provider.OAuth2Provider;
 
 public record ClientRegistration(
         OAuth2Provider provider,

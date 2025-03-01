@@ -1,8 +1,12 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.provider;
 
+import nextstep.security.oauth2.authentication.ClientRegistration;
+import nextstep.security.oauth2.authentication.OAuth2AccessToken;
+import nextstep.security.oauth2.authentication.OAuth2AuthorizationCode;
+import nextstep.security.oauth2.authentication.OAuth2User;
 import org.springframework.web.client.RestTemplate;
 
-import static nextstep.security.oauth2.Oauth2Constants.GOOGLE;
+import static nextstep.security.oauth2.provider.Oauth2Constants.GOOGLE;
 
 public class GoogleClient implements OAuth2ProviderClient {
 

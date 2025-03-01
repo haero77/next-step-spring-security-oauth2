@@ -1,4 +1,4 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcher;
+import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.UriComponentsBuilder;

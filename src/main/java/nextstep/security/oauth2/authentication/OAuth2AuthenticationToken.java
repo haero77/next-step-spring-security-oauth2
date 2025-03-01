@@ -1,4 +1,4 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.authentication;
 
 import nextstep.security.authentication.Authentication;
 

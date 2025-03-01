@@ -1,6 +1,6 @@
 package nextstep.app.security;
 
-import nextstep.security.oauth2.OAuth2User;
+import nextstep.security.oauth2.authentication.OAuth2User;
 
 public class CustomOAuth2User implements OAuth2User {
 

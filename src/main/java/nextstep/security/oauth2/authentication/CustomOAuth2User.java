@@ -1,4 +1,4 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.authentication;
 
 public class CustomOAuth2User implements OAuth2User {
 

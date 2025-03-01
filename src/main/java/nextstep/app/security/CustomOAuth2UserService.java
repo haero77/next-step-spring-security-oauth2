@@ -2,9 +2,9 @@ package nextstep.app.security;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.oauth2.DefaultOAuth2UserService;
-import nextstep.security.oauth2.OAuth2User;
-import nextstep.security.oauth2.OAuth2UserRequest;
+import nextstep.security.oauth2.authentication.DefaultOAuth2UserService;
+import nextstep.security.oauth2.authentication.OAuth2User;
+import nextstep.security.oauth2.authentication.OAuth2UserRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;

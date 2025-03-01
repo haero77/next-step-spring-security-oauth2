@@ -1,4 +1,4 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.provider;
 
 public class Oauth2Constants {
     private Oauth2Constants() {

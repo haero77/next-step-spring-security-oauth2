@@ -1,4 +1,4 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.authentication;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -15,8 +15,9 @@ import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
-import nextstep.security.oauth2.SecurityOAuth2Properties.GitHub;
-import nextstep.security.oauth2.SecurityOAuth2Properties.Google;
+import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.SecurityOAuth2Properties.GitHub;
+import nextstep.security.oauth2.provider.SecurityOAuth2Properties.Google;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.List;
 
-import static nextstep.security.oauth2.Oauth2Constants.*;
+import static nextstep.security.oauth2.provider.Oauth2Constants.*;
 import static org.springframework.http.HttpMethod.GET;
 
 public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {

@@ -1,4 +1,4 @@
-package nextstep.security.oauth2;
+package nextstep.security.oauth2.provider;
 
 import nextstep.security.authentication.AuthenticationException;
 import org.springframework.lang.NonNull;
