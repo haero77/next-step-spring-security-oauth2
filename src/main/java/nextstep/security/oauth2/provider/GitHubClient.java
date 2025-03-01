@@ -1,6 +1,5 @@
 package nextstep.security.oauth2.provider;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.oauth2.authentication.ClientRegistration;
 import nextstep.security.oauth2.authentication.OAuth2AccessToken;
@@ -10,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
-import org.springframework.util.Assert;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -96,14 +94,5 @@ public class GitHubClient implements OAuth2ProviderClient {
                 requestEntity,
                 AccessTokenResponse.class
         );
-    }
-
-    record AccessTokenResponse(
-            @JsonProperty("access_token") String accessToken
-    ) {
-
-        AccessTokenResponse {
-            Assert.hasText(accessToken, "accessToken cannot be empty");
-        }
     }
 }

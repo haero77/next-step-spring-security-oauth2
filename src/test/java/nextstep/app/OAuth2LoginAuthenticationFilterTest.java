@@ -28,8 +28,13 @@ class OAuth2LoginAuthenticationFilterTest extends BaseIntegrationTestSupport {
 
     @BeforeEach
     void setupMockServer() throws Exception {
-        stubForAccessToken();
+        // GitHub
+        stubForGitHubAccessToken();
         stubForGitHubUser();
+
+        // Google
+        stubForGoogleAccessToken();
+        stubForGoogleUser();
     }
 
     @Test
@@ -53,7 +58,28 @@ class OAuth2LoginAuthenticationFilterTest extends BaseIntegrationTestSupport {
                 });
     }
 
-    private void stubForAccessToken() throws JsonProcessingException {
+    @Test
+    void redirectAndRequestGoogleAccessToken() throws Exception {
+        String requestUri = "/login/oauth2/code/google?code=mock_code";
+
+        ResultActions result = mockMvc.perform(get(requestUri))
+                .andDo(print());
+
+        result
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/")) // 로그인 성공 시 루트로 리다이렉트
+                .andExpect(request -> {
+                    HttpSession session = request.getRequest().getSession();
+                    assert session != null;
+                    SecurityContext context = (SecurityContext) session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+                    assertThat(context).isNotNull();
+                    assertThat(context.getAuthentication()).isNotNull();
+                    assertThat(context.getAuthentication().isAuthenticated()).isTrue();
+                    assertThat(context.getAuthentication().getPrincipal()).isEqualTo("google_google-identifier");
+                });
+    }
+
+    private void stubForGitHubAccessToken() throws JsonProcessingException {
         Map<String, String> responseBody = new HashMap<>();
         responseBody.put("access_token", "mock_access_token");
         responseBody.put("token_type", "bearer");
@@ -74,6 +100,29 @@ class OAuth2LoginAuthenticationFilterTest extends BaseIntegrationTestSupport {
         String profileJsonResponse = new ObjectMapper().writeValueAsString(userProfile);
 
         stubFor(WireMock.get(urlPathMatching("/user"))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withBody(profileJsonResponse)));
+    }
+
+    private void stubForGoogleAccessToken() throws JsonProcessingException {
+        Map<String, String> responseBody = new HashMap<>();
+        responseBody.put("access_token", "mock_google_access_token");
+        responseBody.put("token_type", "Bearer");
+        String jsonResponse = new ObjectMapper().writeValueAsString(responseBody);
+
+        stubFor(WireMock.post(urlPathEqualTo("/token"))
+                .willReturn(aResponse()
+                        .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
+                        .withBody(jsonResponse)));
+    }
+
+    private void stubForGoogleUser() throws JsonProcessingException {
+        Map<String, String> userProfile = new HashMap<>();
+        userProfile.put("id", "google-identifier");
+        String profileJsonResponse = new ObjectMapper().writeValueAsString(userProfile);
+
+        stubFor(WireMock.get(urlPathMatching("/oauth2/v2/userinfo"))
                 .willReturn(aResponse()
                         .withHeader(HttpHeaders.CONTENT_TYPE, "application/json")
                         .withBody(profileJsonResponse)));

@@ -72,7 +72,7 @@ public class SecurityOAuth2Properties {
             String userInfoUri
     ) implements OAuth2Provider {
 
-        private static final String USERNAME_ATTRIBUTE_NAME = "sub";
+        private static final String USERNAME_ATTRIBUTE_NAME = "id";
 
         public Google {
             Assert.hasText(clientId, "clientId cannot be empty");

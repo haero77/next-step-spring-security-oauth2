@@ -61,7 +61,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             HttpServletResponse response,
             FilterChain chain
     ) throws IOException, ServletException {
-        if (!matcher.matches(request)) {
+        if (!matchesPattern(request)) {
             chain.doFilter(request, response);
             return;
         }
@@ -86,6 +86,10 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             logger.info("Authentication failed: {}", e.getMessage());
             response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
         }
+    }
+
+    private boolean matchesPattern(HttpServletRequest request) {
+        return request.getRequestURI().startsWith(LOGIN_CALL_BACK_URI_PREFIX);
     }
 
     private Authentication attemptAuthentication(HttpServletRequest request, OAuth2AuthorizationCode code) {

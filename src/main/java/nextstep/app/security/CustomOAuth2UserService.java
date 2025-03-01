@@ -5,12 +5,14 @@ import nextstep.app.domain.MemberRepository;
 import nextstep.security.oauth2.authentication.DefaultOAuth2UserService;
 import nextstep.security.oauth2.authentication.OAuth2User;
 import nextstep.security.oauth2.authentication.OAuth2UserRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CustomOAuth2UserService.class);
 
     private final MemberRepository memberRepository;
 
@@ -22,20 +24,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String username = getFormattedUsername(oAuth2User);
+        String username = generateUsername(userRequest, oAuth2User);
 
-        Optional<Member> memberOpt = memberRepository.findByEmail(username);
-        if (memberOpt.isPresent()) {
-            return new CustomOAuth2User(memberOpt.get().getEmail());
-        }
+        return memberRepository.findByEmail(username)
+                .map(member -> new CustomOAuth2User(member.getEmail()))
+                .orElseGet(() -> registerNewMember(username));
+    }
 
-        // 신규 회원인 경우 회원가입 처리
+    private CustomOAuth2User registerNewMember(String username) {
         Member newMember = Member.byOAuth2Joining(username);
         memberRepository.save(newMember);
+        logger.info("Welcome! New member joined!!!: username={}", newMember.getEmail());
+
         return new CustomOAuth2User(newMember.getEmail());
     }
 
-    private String getFormattedUsername(OAuth2User oAuth2User) {
-        return "github_%s".formatted(oAuth2User.getName());
+    private String generateUsername(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
+        return userRequest.registration().provider().getProviderName() + "_" + oAuth2User.getName();
     }
 }
