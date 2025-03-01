@@ -14,12 +14,17 @@ class SecurityOAuth2PropertiesTest extends BaseIntegrationTestSupport {
     SecurityOAuth2Properties sut;
 
     @Test
-    void load_github_credentials_from_profiles() {
+    void load_credentials_from_profiles() {
         SecurityOAuth2Properties.GitHub github = sut.getGithub();
-
         assertAll(
                 () -> assertThat(github.clientId()).isEqualTo("test-github-client-id"),
                 () -> assertThat(github.clientSecret()).isEqualTo("test-github-client-secret")
+        );
+
+        SecurityOAuth2Properties.Google google = sut.getGoogle();
+        assertAll(
+                () -> assertThat(google.clientId()).isEqualTo("test-google-client-id"),
+                () -> assertThat(google.clientSecret()).isEqualTo("test-google-client-secret")
         );
     }
 }

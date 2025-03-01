@@ -10,3 +10,8 @@ security:
       api-domain: https://api.github.com
       client-id: ${OAUTH2_GITHUB_CLIENT_ID}
       client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET}
+    google:
+      domain: https://github.com
+      api-domain: https://oauth2.googleapis.com
+      client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
+      client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
