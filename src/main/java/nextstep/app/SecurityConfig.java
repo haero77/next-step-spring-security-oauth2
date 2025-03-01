@@ -2,22 +2,21 @@ package nextstep.app;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.oauth2.OAuth2UserService;
-import nextstep.security.oauth2.SecurityOAuth2Properties;
 import nextstep.security.access.AnyRequestMatcher;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcherEntry;
 import nextstep.security.access.hierarchicalroles.RoleHierarchy;
 import nextstep.security.access.hierarchicalroles.RoleHierarchyImpl;
-import nextstep.security.authentication.*;
+import nextstep.security.authentication.AuthenticationException;
+import nextstep.security.authentication.BasicAuthenticationFilter;
+import nextstep.security.authentication.UsernamePasswordAuthenticationFilter;
 import nextstep.security.authorization.*;
 import nextstep.security.config.DefaultSecurityFilterChain;
 import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.context.SecurityContextHolderFilter;
-import nextstep.security.oauth2.GitHubLoginRedirectFilter;
-import nextstep.security.oauth2.OAuth2LoginAuthenticationFilter;
+import nextstep.security.oauth2.*;
 import nextstep.security.userdetails.UserDetails;
 import nextstep.security.userdetails.UserDetailsService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -57,6 +56,7 @@ public class SecurityConfig {
                 List.of(
                         new SecurityContextHolderFilter(),
                         new GitHubLoginRedirectFilter(securityOAuth2Properties),
+                        new GoogleLoginRedirectFilter(securityOAuth2Properties),
                         new OAuth2LoginAuthenticationFilter(securityOAuth2Properties, oAuth2UserService),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
