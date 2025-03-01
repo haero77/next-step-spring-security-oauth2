@@ -54,4 +54,8 @@ public class OAuth2AuthenticationToken implements Authentication {
     public ClientRegistration getClientRegistration() {
         return clientRegistration;
     }
+
+    public OAuth2AuthorizationCode getAuthorizationCode() {
+        return authorizationCode;
+    }
 }

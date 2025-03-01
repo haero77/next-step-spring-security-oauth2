@@ -4,7 +4,9 @@ public interface OAuth2Provider {
 
     String getProviderName();
 
-    String getClientId();
+    String getAccessTokenUri();
 
-    String getClientSecret();
+    String getUserInfoUri();
+
+    String getUsernameAttributeName();
 }

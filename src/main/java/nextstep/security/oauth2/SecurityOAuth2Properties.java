@@ -31,8 +31,11 @@ public class SecurityOAuth2Properties {
             String clientId,
             String clientSecret,
             String tokenUri,
-            String userInfoUri
+            String userInfoUri,
+            String usernameAttributeName
     ) implements OAuth2Provider {
+
+        private static final String USERNAME_ATTRIBUTE_NAME = "id";
 
         public GitHub {
             Assert.hasText(clientId, "clientId cannot be empty");
@@ -55,6 +58,11 @@ public class SecurityOAuth2Properties {
         public String getUserInfoUri() {
             return userInfoUri();
         }
+
+        @Override
+        public String getUsernameAttributeName() {
+            return USERNAME_ATTRIBUTE_NAME;
+        }
     }
 
     public record Google(
@@ -63,6 +71,8 @@ public class SecurityOAuth2Properties {
             String tokenUri,
             String userInfoUri
     ) implements OAuth2Provider {
+
+        private static final String USERNAME_ATTRIBUTE_NAME = "sub";
 
         public Google {
             Assert.hasText(clientId, "clientId cannot be empty");
@@ -84,6 +94,11 @@ public class SecurityOAuth2Properties {
         @Override
         public String getUserInfoUri() {
             return userInfoUri();
+        }
+
+        @Override
+        public String getUsernameAttributeName() {
+            return USERNAME_ATTRIBUTE_NAME;
         }
     }
 }

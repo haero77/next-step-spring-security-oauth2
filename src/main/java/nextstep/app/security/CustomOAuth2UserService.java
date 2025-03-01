@@ -2,7 +2,9 @@ package nextstep.app.security;
 
 import nextstep.app.domain.Member;
 import nextstep.app.domain.MemberRepository;
-import nextstep.security.oauth2.*;
+import nextstep.security.oauth2.DefaultOAuth2UserService;
+import nextstep.security.oauth2.OAuth2User;
+import nextstep.security.oauth2.OAuth2UserRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -12,8 +14,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
     private final MemberRepository memberRepository;
 
-    public CustomOAuth2UserService(MemberRepository memberRepository, SecurityOAuth2Properties oAuth2Properties) {
-        super(oAuth2Properties);
+    public CustomOAuth2UserService(MemberRepository memberRepository) {
         this.memberRepository = memberRepository;
     }
 
