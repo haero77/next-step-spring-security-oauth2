@@ -28,17 +28,17 @@ public class SecurityOAuth2Properties {
     }
 
     public record GitHub(
-            String domain,
-            String apiDomain,
             String clientId,
-            String clientSecret
+            String clientSecret,
+            String tokenUri,
+            String userInfoUri
     ) implements OAuth2Provider {
 
         public GitHub {
-            Assert.hasText(domain, "domain cannot be empty");
-            Assert.hasText(apiDomain, "apiDomain cannot be empty");
             Assert.hasText(clientId, "clientId cannot be empty");
             Assert.hasText(clientSecret, "clientSecret cannot be empty");
+            Assert.hasText(tokenUri, "tokenUri cannot be empty");
+            Assert.hasText(userInfoUri, "userInfoUri cannot be empty");
         }
 
         @Override
@@ -47,28 +47,28 @@ public class SecurityOAuth2Properties {
         }
 
         @Override
-        public String getClientId() {
-            return clientId();
+        public String getAccessTokenUri() {
+            return tokenUri();
         }
 
         @Override
-        public String getClientSecret() {
-            return clientSecret();
+        public String getUserInfoUri() {
+            return userInfoUri();
         }
     }
 
     public record Google(
-            String domain,
-            String apiDomain,
             String clientId,
-            String clientSecret
+            String clientSecret,
+            String tokenUri,
+            String userInfoUri
     ) implements OAuth2Provider {
 
         public Google {
-            Assert.hasText(domain, "domain cannot be empty");
-            Assert.hasText(apiDomain, "apiDomain cannot be empty");
             Assert.hasText(clientId, "clientId cannot be empty");
             Assert.hasText(clientSecret, "clientSecret cannot be empty");
+            Assert.hasText(tokenUri, "tokenUri cannot be empty");
+            Assert.hasText(userInfoUri, "userInfoUri cannot be empty");
         }
 
         @Override
@@ -77,13 +77,13 @@ public class SecurityOAuth2Properties {
         }
 
         @Override
-        public String getClientId() {
-            return clientId();
+        public String getAccessTokenUri() {
+            return tokenUri();
         }
 
         @Override
-        public String getClientSecret() {
-            return clientSecret();
+        public String getUserInfoUri() {
+            return userInfoUri();
         }
     }
 }

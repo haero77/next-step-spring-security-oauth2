@@ -6,12 +6,12 @@ spring:
 security:
   oauth2:
     github:
-      domain: https://github.com
-      api-domain: https://api.github.com
       client-id: ${OAUTH2_GITHUB_CLIENT_ID}
       client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET}
+      token-uri: https://github.com/login/oauth/access_token
+      user-info-uri: https://api.github.com/user
     google:
-      domain: https://github.com
-      api-domain: https://oauth2.googleapis.com
       client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
       client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
+      token-uri: https://oauth2.googleapis.com/token
+      user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo

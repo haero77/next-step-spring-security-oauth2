@@ -15,6 +15,8 @@ import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.oauth2.SecurityOAuth2Properties.GitHub;
+import nextstep.security.oauth2.SecurityOAuth2Properties.Google;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -40,7 +42,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
     public OAuth2LoginAuthenticationFilter(SecurityOAuth2Properties oAuth2Properties, OAuth2UserService userService) {
         this.oAuth2Properties = oAuth2Properties;
         this.authenticationManager = new ProviderManager(
-                List.of(new OAuth2AuthenticationProvider(oAuth2Properties, userService))
+                List.of(new OAuth2AuthenticationProvider(userService))
         );
     }
 
@@ -97,11 +99,19 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
         String provider = getProvider(request);
 
         if (provider.equals(GITHUB)) {
-            return OAuth2AuthenticationToken.unauthenticated(new ClientRegistration(oAuth2Properties.getGithub()), code);
+            GitHub github = oAuth2Properties.getGithub();
+            return OAuth2AuthenticationToken.unauthenticated(
+                    new ClientRegistration(github, github.clientId(), github.clientSecret()),
+                    code
+            );
         }
 
         if (provider.equals(GOOGLE)) {
-            return OAuth2AuthenticationToken.unauthenticated(new ClientRegistration(oAuth2Properties.getGoogle()), code);
+            Google google = oAuth2Properties.getGoogle();
+            return OAuth2AuthenticationToken.unauthenticated(
+                    new ClientRegistration(google, google.clientId(), google.clientSecret()),
+                    code
+            );
         }
 
         throw new AuthenticationException("Provider '%s' is not supported".formatted(provider));
