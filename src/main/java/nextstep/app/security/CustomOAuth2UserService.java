@@ -40,6 +40,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     }
 
     private String generateUsername(OAuth2UserRequest userRequest, OAuth2User oAuth2User) {
-        return userRequest.registration().provider().getProviderName() + "_" + oAuth2User.getName();
+        return userRequest.registration().registrationId() + "_" + oAuth2User.getName();
     }
 }

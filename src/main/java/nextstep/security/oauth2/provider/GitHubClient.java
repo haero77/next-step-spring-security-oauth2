@@ -48,10 +48,10 @@ public class GitHubClient implements OAuth2ProviderClient {
 
     @Override
     public OAuth2User fetchUser(ClientRegistration registration, OAuth2AccessToken accessToken) {
-        OAuth2Provider provider = registration.provider();
+        ClientRegistration.ProviderDetails provider = registration.providerDetails();
 
         RequestEntity<?> request = RequestEntity
-                .get(URI.create(provider.getUserInfoUri()))
+                .get(URI.create(provider.userInfoUri()))
                 .headers(headers -> headers.setBearerAuth(accessToken.value()))
                 .build();
         logger.info("request: {}", request);
@@ -66,7 +66,7 @@ public class GitHubClient implements OAuth2ProviderClient {
             throw new AuthenticationException("Failed to get user info");
         });
 
-        String usernameAttributeName = provider.getUsernameAttributeName();
+        String usernameAttributeName = provider.userNameAttribute();
         Object username = Objects.requireNonNullElseGet(userInfo.get(usernameAttributeName), () -> {
             throw new AuthenticationException("Failed to get user identifier(=%s)".formatted(usernameAttributeName));
         });
@@ -75,9 +75,9 @@ public class GitHubClient implements OAuth2ProviderClient {
     }
 
     private ResponseEntity<AccessTokenResponse> callAccessTokenApi(ClientRegistration registration, OAuth2AuthorizationCode code) {
-        OAuth2Provider provider = registration.provider();
+        ClientRegistration.ProviderDetails provider = registration.providerDetails();
 
-        URI accessTokenUrl = UriComponentsBuilder.fromHttpUrl(provider.getAccessTokenUri())
+        URI accessTokenUrl = UriComponentsBuilder.fromHttpUrl(provider.tokenUri())
                 .queryParam("client_id", registration.clientId())
                 .queryParam("client_secret", registration.clientSecret())
                 .queryParam("code", code.codeValue())

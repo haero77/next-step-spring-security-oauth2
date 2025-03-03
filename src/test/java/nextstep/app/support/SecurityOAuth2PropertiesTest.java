@@ -5,8 +5,9 @@ import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SecurityOAuth2PropertiesTest extends BaseIntegrationTestSupport {
 
@@ -14,17 +15,18 @@ class SecurityOAuth2PropertiesTest extends BaseIntegrationTestSupport {
     OAuth2ClientProperties sut;
 
     @Test
-    void load_credentials_from_profiles() {
-        OAuth2ClientProperties.GitHub github = sut.getGithub();
-        assertAll(
-                () -> assertThat(github.clientId()).isEqualTo("test-github-client-id"),
-                () -> assertThat(github.clientSecret()).isEqualTo("test-github-client-secret")
-        );
+    void load_oauth2_client_infos() {
+        Map<String, OAuth2ClientProperties.Registration> registration = sut.getRegistration();
+        Map<String, OAuth2ClientProperties.Provider> provider = sut.getProvider();
 
-        OAuth2ClientProperties.Google google = sut.getGoogle();
-        assertAll(
-                () -> assertThat(google.clientId()).isEqualTo("test-google-client-id"),
-                () -> assertThat(google.clientSecret()).isEqualTo("test-google-client-secret")
-        );
+        OAuth2ClientProperties.Registration githubRegistration = registration.get("github");
+        assertThat(githubRegistration).isNotNull();
+        assertThat(githubRegistration.provider()).isEqualTo("github");
+        assertThat(githubRegistration.clientId()).isEqualTo("test-github-client-id");
+        assertThat(githubRegistration.clientSecret()).isEqualTo("test-github-client-secret");
+
+        OAuth2ClientProperties.Provider githubProvider = provider.get("github");
+        assertThat(githubProvider).isNotNull();
+        assertThat(githubProvider.authorizationUri()).isEqualTo("http://localhost:8089/login/oauth/authorize");
     }
 }

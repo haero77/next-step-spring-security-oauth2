@@ -20,7 +20,7 @@ class GoogleLoginRedirectFilterTest extends BaseIntegrationTestSupport {
     void redirectTest() throws Exception {
         String requestUri = "/oauth2/authorization/google";
         String expectedRedirectUri = "https://accounts.google.com/o/oauth2/v2/auth" +
-                "?client_id=" + oAuth2Properties.getGoogle().clientId() +
+                "?client_id=" + oAuth2Properties.getRegistration().get("google").clientId() +
                 "&response_type=code" +
                 "&scope=https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email" +
                 "&redirect_uri=http://localhost:8080/login/oauth2/code/google";

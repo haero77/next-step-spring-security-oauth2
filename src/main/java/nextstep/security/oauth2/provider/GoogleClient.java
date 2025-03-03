@@ -47,7 +47,7 @@ public class GoogleClient implements OAuth2ProviderClient {
         params.add("grant_type", "authorization_code");
 
         RequestEntity<MultiValueMap<String, String>> request = RequestEntity
-                .post(URI.create(registration.provider().getAccessTokenUri()))
+                .post(URI.create(registration.providerDetails().tokenUri()))
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(params);
         logger.info("request: {}", request);
@@ -64,10 +64,10 @@ public class GoogleClient implements OAuth2ProviderClient {
 
     @Override
     public OAuth2User fetchUser(ClientRegistration registration, OAuth2AccessToken accessToken) {
-        OAuth2Provider provider = registration.provider();
+        ClientRegistration.ProviderDetails provider = registration.providerDetails();
 
         RequestEntity<Void> request = RequestEntity
-                .get(URI.create(provider.getUserInfoUri()))
+                .get(URI.create(provider.userInfoUri()))
                 .headers(headers -> headers.setBearerAuth(accessToken.value()))
                 .build();
         logger.info("request: {}", request);
@@ -82,7 +82,7 @@ public class GoogleClient implements OAuth2ProviderClient {
             throw new AuthenticationException("Failed to get user info");
         });
 
-        String usernameAttributeName = provider.getUsernameAttributeName();
+        String usernameAttributeName = provider.userNameAttribute();
         Object username = Objects.requireNonNullElseGet(userInfo.get(usernameAttributeName), () -> {
             throw new AuthenticationException("Failed to get user identifier(=%s)".formatted(usernameAttributeName));
         });

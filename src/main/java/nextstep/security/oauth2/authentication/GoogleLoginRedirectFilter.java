@@ -45,7 +45,7 @@ public class GoogleLoginRedirectFilter extends GenericFilterBean {
         }
 
         String googleLoginUrl = UriComponentsBuilder.fromHttpUrl("https://accounts.google.com/o/oauth2/v2/auth")
-                .queryParam("client_id", oAuth2Properties.getGoogle().clientId())
+                .queryParam("client_id", oAuth2Properties.getRegistration().get("google").clientId())
                 .queryParam("response_type", "code")
                 .queryParam("scope", "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email")
                 .queryParam("redirect_uri", "http://localhost:8080/login/oauth2/code/google")

@@ -40,7 +40,7 @@ public class GitHubLoginRedirectFilter extends GenericFilterBean {
             response.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
 
             String githubLoginUrl = UriComponentsBuilder.fromHttpUrl("https://github.com/login/oauth/authorize")
-                    .queryParam("client_id", oAuth2Properties.getGithub().clientId())
+                    .queryParam("client_id", oAuth2Properties.getRegistration().get("github").clientId())
                     .queryParam("response_type", "code")
                     .queryParam("scope", "read:user")
                     .queryParam("redirect_uri", "http://localhost:8080/login/oauth2/code/github")

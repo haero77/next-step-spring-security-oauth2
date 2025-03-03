@@ -6,8 +6,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.security.access.MvcRequestMatcher;
-import nextstep.security.access.RequestMatcher;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.authentication.AuthenticationManager;
@@ -16,8 +14,6 @@ import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.oauth2.provider.OAuth2ClientProperties;
-import nextstep.security.oauth2.provider.OAuth2ClientProperties.GitHub;
-import nextstep.security.oauth2.provider.OAuth2ClientProperties.Google;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -27,14 +23,11 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.List;
 
-import static nextstep.security.oauth2.provider.Oauth2Constants.*;
-import static org.springframework.http.HttpMethod.GET;
+import static nextstep.security.oauth2.provider.Oauth2Constants.LOGIN_CALL_BACK_URI_PREFIX;
 
 public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth2LoginAuthenticationFilter.class);
-
-    private final RequestMatcher matcher = new MvcRequestMatcher(GET, "/login/oauth2/code/github");
 
     private final AuthenticationManager authenticationManager;
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
@@ -101,25 +94,18 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             HttpServletRequest request,
             OAuth2AuthorizationCode code
     ) {
-        String provider = getProvider(request);
-
-        if (provider.equals(GITHUB)) {
-            GitHub github = oAuth2Properties.getGithub();
-            return OAuth2AuthenticationToken.unauthenticated(
-                    new ClientRegistration(github, github.clientId(), github.clientSecret()),
-                    code
-            );
+        String providerName = getProvider(request);
+        OAuth2ClientProperties.Registration registration = oAuth2Properties.getRegistration().get(providerName);
+        if (registration == null) {
+            throw new AuthenticationException("Invalid registration: " + providerName);
         }
 
-        if (provider.equals(GOOGLE)) {
-            Google google = oAuth2Properties.getGoogle();
-            return OAuth2AuthenticationToken.unauthenticated(
-                    new ClientRegistration(google, google.clientId(), google.clientSecret()),
-                    code
-            );
+        OAuth2ClientProperties.Provider provider = oAuth2Properties.getProvider().get(providerName);
+        if (provider == null) {
+            throw new AuthenticationException("Invalid provider: " + providerName);
         }
 
-        throw new AuthenticationException("Provider '%s' is not supported".formatted(provider));
+        return OAuth2AuthenticationToken.unauthenticated(ClientRegistration.of(registration, provider), code);
     }
 
     private String getProvider(HttpServletRequest request) {
