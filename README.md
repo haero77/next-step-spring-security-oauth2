@@ -1,7 +1,5 @@
 # 만들면서 배우는 Spring Security 2기 - OAuth 2.0 미션
 
-# 요구사항 
-
 ## 1단계 
 
 ### 🚀 1-1단계 - OAuth 2.0 Login
@@ -25,12 +23,24 @@
   - [x] OAuth2AuthenticationProvider에서 각 OAuth2 제공자에 맞게 액세스 토큰 취득
     - [x] GitHub Client 구현
   - [x] DefaultOAuth2UserService에서 각 OAuth2 제공자에 맞게 사용자 정보 조회
-- [ ] 구글 로그인 구현
+- [x] 구글 로그인 구현
   - [x] GoogleLoginRedirectFilter
   - [x] GoogleClient 
     - [x] 코드를 이용한 액세스 토큰 발급
     - [x] 액세스 토큰을 이용한 사용자 정보 조회
 - [x] 실제 UI로 통합 테스트 진행
+
+## [1단계 피드백](https://github.com/next-step/spring-security-oauth2/pull/19#pullrequestreview-2652743249) 
+
+- [OAuth2 provider에 대한 직접적인 정보를 프로덕션 코드에 미노출(어떤 플랫폼을 사용할지는 추상화)](https://github.com/next-step/spring-security-oauth2/pull/19#discussion_r1976646965)
+  - `provider`가 추가될 때 프로덕션 코드도 변경되어야할지에 대한 고민
+- [OAuth2는 프로토콜. 플랫폼별로 동일한 스펙을 가지고 있다. 즉, 플랫폼마다 각각의 구현체를 따로 둘 필요는 없음.](https://github.com/next-step/spring-security-oauth2/pull/19#discussion_r1976648478)
+
+
+### 피드백 적용
+
+- [x] OAuth2 제공자가 추가되어도 프로덕션 코드는 변경 없도록 환경변수를 추상화하여 관리
+- [x] OAuth2AuthorizationRequestRedirectFilter 필터 구현
 
 ## 2단계
 
@@ -42,3 +52,4 @@
   - [ ] redirect URI를 상수로 관리
   - [ ] authorization URI를 환경변수로 관리
 
+## 2단계 피드백
