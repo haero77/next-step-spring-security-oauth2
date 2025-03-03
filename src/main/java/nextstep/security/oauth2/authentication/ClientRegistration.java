@@ -1,6 +1,6 @@
 package nextstep.security.oauth2.authentication;
 
-import nextstep.security.oauth2.provider.OAuth2ClientProperties;
+import nextstep.oauth2.OAuth2ClientProperties;
 
 public record ClientRegistration(
         String registrationId,

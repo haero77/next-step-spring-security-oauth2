@@ -6,9 +6,9 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.security.oauth2.provider.OAuth2ClientProperties;
-import nextstep.security.oauth2.provider.OAuth2ClientProperties.Provider;
-import nextstep.security.oauth2.provider.OAuth2ClientProperties.Registration;
+import nextstep.oauth2.OAuth2ClientProperties;
+import nextstep.oauth2.OAuth2ClientProperties.Provider;
+import nextstep.oauth2.OAuth2ClientProperties.Registration;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.UriComponentsBuilder;
 
