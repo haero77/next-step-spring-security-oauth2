@@ -1,6 +1,8 @@
-package nextstep.security.oauth2.authentication;
+package nextstep.security.oauth2.client.authentication;
 
 import nextstep.security.authentication.Authentication;
+import nextstep.security.oauth2.client.registration.ClientRegistration;
+import nextstep.security.oauth2.core.OAuth2AuthorizationCode;
 
 import java.util.Set;
 

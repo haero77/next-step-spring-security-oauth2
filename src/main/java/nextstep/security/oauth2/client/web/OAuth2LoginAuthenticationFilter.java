@@ -1,4 +1,4 @@
-package nextstep.security.oauth2.authentication;
+package nextstep.security.oauth2.client.web;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -14,6 +14,11 @@ import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
+import nextstep.security.oauth2.client.authentication.OAuth2AuthenticationProvider;
+import nextstep.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import nextstep.security.oauth2.client.registration.ClientRegistration;
+import nextstep.security.oauth2.client.userinfo.OAuth2UserService;
+import nextstep.security.oauth2.core.OAuth2AuthorizationCode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
