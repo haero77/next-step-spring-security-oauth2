@@ -44,12 +44,28 @@
 
 ## 2단계
 
+### 2-1: 리다이렉트 필터
 
-// ...
+> 주요 클래스
+> - OAuth2AuthorizationRequestResolver
+> - AuthorizationRequestRepository
+> - OAuth2AuthorizationRequest
+> - ClientRegistrationRepository
 
-
+- [ ] ClientRegistrationRepository 구현
+  - [x] <RegistrationId, ClientRegistration>를 담는 일급 컬렉션 InMemoryClientRegistrationRepository 구현
+  - [ ] InMemoryClientRegistrationRepository 빈 등록 시 ClientProperties 주입 받아 초기화  
+- [ ] AuthorizationRequestRepository 구현
+  - [ ] <AuthorizationRequest, HttpServletRequest>를 담는 일급 컬렉션 HttpSessionAuthorizationRequestRepository 구현
+  - [ ] HttpSessionAuthorizationRequestRepository 빈 등록 시 HttpSession을 주입 받아 초기화
+- [ ] OAuth2AuthorizationRequestResolver 구현
+  - [ ] OAuth2AuthorizationRequestResolver 빈 등록 시 ClientRegistrationRepository 주입 받아  초기화
 - [ ] 중복 코드 리팩터링
   - [ ] redirect URI를 상수로 관리
   - [ ] authorization URI를 환경변수로 관리
+
+### 2-2: OAuth 인증 필터
+
+- [ ] 플랫폼에 따라 
 
 ## 2단계 피드백
