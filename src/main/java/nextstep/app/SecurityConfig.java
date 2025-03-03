@@ -16,8 +16,7 @@ import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.context.SecurityContextHolderFilter;
-import nextstep.security.oauth2.authentication.GitHubLoginRedirectFilter;
-import nextstep.security.oauth2.authentication.GoogleLoginRedirectFilter;
+import nextstep.security.oauth2.authentication.OAuth2AuthorizationRequestRedirectFilter;
 import nextstep.security.oauth2.authentication.OAuth2LoginAuthenticationFilter;
 import nextstep.security.oauth2.authentication.OAuth2UserService;
 import nextstep.security.oauth2.provider.OAuth2ClientProperties;
@@ -59,8 +58,7 @@ public class SecurityConfig {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new SecurityContextHolderFilter(),
-                        new GitHubLoginRedirectFilter(securityOAuth2Properties),
-                        new GoogleLoginRedirectFilter(securityOAuth2Properties),
+                        new OAuth2AuthorizationRequestRedirectFilter(securityOAuth2Properties),
                         new OAuth2LoginAuthenticationFilter(securityOAuth2Properties, oAuth2UserService),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),

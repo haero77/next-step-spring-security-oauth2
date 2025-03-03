@@ -23,6 +23,14 @@ public class OAuth2ClientProperties {
         return this.registration;
     }
 
+    public Registration getRegistrationById(String registrationId) {
+        Registration registration = this.registration.get(registrationId);
+        if (registration == null) {
+            throw new IllegalArgumentException("Cannot find Registration for registrationId=%s".formatted(registrationId));
+        }
+        return registration;
+    }
+
     public record Registration(
             String provider,
             String clientId,
