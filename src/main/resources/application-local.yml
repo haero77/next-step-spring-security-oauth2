@@ -10,14 +10,14 @@ spring:
         registration:
           github:
             provider: github
-            client-id: ${OAUTH2_GITHUB_CLIENT_ID}
+            client-id: Ov23liMzDFhqnCThVEGr
             client-secret: ${OAUTH2_GITHUB_CLIENT_SECRET}
             scope:
               - read:user
             redirect-uri: http://localhost:8080/login/oauth2/code/github
           google:
             provider: google
-            client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
+            client-id: 74460929097-9vdcgjsg9ecucqndg0n6auandajfjjf7.apps.googleusercontent.com
             client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
             scope:
               - https://www.googleapis.com/auth/userinfo.profile
