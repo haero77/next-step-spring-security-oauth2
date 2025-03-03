@@ -72,12 +72,15 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authResult);
             SecurityContextHolder.setContext(context);
-            securityContextRepository.saveContext(context, request, response);
 
             response.sendRedirect("/"); // 인증 완료 후 리다이렉트
         } catch (AuthenticationException e) {
             logger.info("Authentication failed: {}", e.getMessage());
             response.sendError(HttpStatus.UNAUTHORIZED.value(), HttpStatus.UNAUTHORIZED.getReasonPhrase());
+        } finally {
+            SecurityContext context = SecurityContextHolder.getContext();
+            securityContextRepository.saveContext(context, request, response);
+            SecurityContextHolder.clearContext();
         }
     }
 
