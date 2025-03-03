@@ -1,7 +1,7 @@
 package nextstep.app.support;
 
 import nextstep.app.testsupport.BaseIntegrationTestSupport;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,17 +11,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class SecurityOAuth2PropertiesTest extends BaseIntegrationTestSupport {
 
     @Autowired
-    SecurityOAuth2Properties sut;
+    OAuth2ClientProperties sut;
 
     @Test
     void load_credentials_from_profiles() {
-        SecurityOAuth2Properties.GitHub github = sut.getGithub();
+        OAuth2ClientProperties.GitHub github = sut.getGithub();
         assertAll(
                 () -> assertThat(github.clientId()).isEqualTo("test-github-client-id"),
                 () -> assertThat(github.clientSecret()).isEqualTo("test-github-client-secret")
         );
 
-        SecurityOAuth2Properties.Google google = sut.getGoogle();
+        OAuth2ClientProperties.Google google = sut.getGoogle();
         assertAll(
                 () -> assertThat(google.clientId()).isEqualTo("test-google-client-id"),
                 () -> assertThat(google.clientSecret()).isEqualTo("test-google-client-secret")

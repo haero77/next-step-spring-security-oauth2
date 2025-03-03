@@ -1,7 +1,7 @@
 package nextstep.app;
 
 import nextstep.app.testsupport.BaseIntegrationTestSupport;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.ResultActions;
@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class GoogleLoginRedirectFilterTest extends BaseIntegrationTestSupport {
 
     @Autowired
-    SecurityOAuth2Properties oAuth2Properties;
+    OAuth2ClientProperties oAuth2Properties;
 
     @Test
     void redirectTest() throws Exception {

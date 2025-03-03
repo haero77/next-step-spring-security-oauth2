@@ -20,7 +20,7 @@ import nextstep.security.oauth2.authentication.GitHubLoginRedirectFilter;
 import nextstep.security.oauth2.authentication.GoogleLoginRedirectFilter;
 import nextstep.security.oauth2.authentication.OAuth2LoginAuthenticationFilter;
 import nextstep.security.oauth2.authentication.OAuth2UserService;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import nextstep.security.userdetails.UserDetails;
 import nextstep.security.userdetails.UserDetailsService;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 @EnableAspectJAutoProxy
-@EnableConfigurationProperties({SecurityOAuth2Properties.class})
+@EnableConfigurationProperties({OAuth2ClientProperties.class})
 @Configuration
 public class SecurityConfig {
 
@@ -55,7 +55,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(SecurityOAuth2Properties securityOAuth2Properties, OAuth2UserService oAuth2UserService) {
+    public SecurityFilterChain securityFilterChain(OAuth2ClientProperties securityOAuth2Properties, OAuth2UserService oAuth2UserService) {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new SecurityContextHolderFilter(),

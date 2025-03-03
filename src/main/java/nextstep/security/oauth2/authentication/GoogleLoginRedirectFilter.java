@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcher;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,9 +19,9 @@ public class GoogleLoginRedirectFilter extends GenericFilterBean {
 
     private final RequestMatcher matcher = new MvcRequestMatcher(HttpMethod.GET, "/oauth2/authorization/google"); // fixme: BASE URI + /google로 리팩토링
 
-    private final SecurityOAuth2Properties oAuth2Properties;
+    private final OAuth2ClientProperties oAuth2Properties;
 
-    public GoogleLoginRedirectFilter(SecurityOAuth2Properties oAuth2Properties) {
+    public GoogleLoginRedirectFilter(OAuth2ClientProperties oAuth2Properties) {
         this.oAuth2Properties = oAuth2Properties;
     }
 

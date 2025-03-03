@@ -15,9 +15,9 @@ import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties.GitHub;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties.Google;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties.GitHub;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties.Google;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -38,9 +38,9 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-    private final SecurityOAuth2Properties oAuth2Properties;
+    private final OAuth2ClientProperties oAuth2Properties;
 
-    public OAuth2LoginAuthenticationFilter(SecurityOAuth2Properties oAuth2Properties, OAuth2UserService userService) {
+    public OAuth2LoginAuthenticationFilter(OAuth2ClientProperties oAuth2Properties, OAuth2UserService userService) {
         this.oAuth2Properties = oAuth2Properties;
         this.authenticationManager = new ProviderManager(
                 List.of(new OAuth2AuthenticationProvider(userService))

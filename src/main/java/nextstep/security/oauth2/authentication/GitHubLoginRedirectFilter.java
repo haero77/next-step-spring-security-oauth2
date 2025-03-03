@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.access.MvcRequestMatcher;
 import nextstep.security.access.RequestMatcher;
-import nextstep.security.oauth2.provider.SecurityOAuth2Properties;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
@@ -22,9 +22,9 @@ public class GitHubLoginRedirectFilter extends GenericFilterBean {
     private static final Logger logger = LoggerFactory.getLogger(GitHubLoginRedirectFilter.class);
 
     private final RequestMatcher matcher = new MvcRequestMatcher(HttpMethod.GET, "/oauth2/authorization/github");
-    private final SecurityOAuth2Properties oAuth2Properties;
+    private final OAuth2ClientProperties oAuth2Properties;
 
-    public GitHubLoginRedirectFilter(SecurityOAuth2Properties oAuth2Properties) {
+    public GitHubLoginRedirectFilter(OAuth2ClientProperties oAuth2Properties) {
         this.oAuth2Properties = oAuth2Properties;
     }
 

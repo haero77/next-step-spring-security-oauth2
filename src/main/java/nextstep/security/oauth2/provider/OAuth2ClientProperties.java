@@ -5,12 +5,12 @@ import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 
 @ConfigurationProperties(prefix = "security.oauth2")
-public class SecurityOAuth2Properties {
+public class OAuth2ClientProperties {
 
     private final GitHub github;
     private final Google google;
 
-    public SecurityOAuth2Properties(GitHub github, Google google) {
+    public OAuth2ClientProperties(GitHub github, Google google) {
         Assert.notNull(github, "github must not be null");
         Assert.notNull(google, "google must not be null");
 
