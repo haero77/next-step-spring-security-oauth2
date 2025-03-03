@@ -1,8 +1,12 @@
-package nextstep.security.oauth2.authentication;
+package nextstep.security.oauth2.client.authentication;
 
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.authentication.AuthenticationProvider;
+import nextstep.security.oauth2.client.userinfo.OAuth2UserRequest;
+import nextstep.security.oauth2.client.userinfo.OAuth2UserService;
+import nextstep.security.oauth2.core.OAuth2AccessToken;
+import nextstep.security.oauth2.core.user.OAuth2User;
 import nextstep.security.oauth2.provider.OAuth2ProviderClient;
 import nextstep.security.oauth2.provider.OAuth2ProviderClientFactory;
 

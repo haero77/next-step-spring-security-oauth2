@@ -1,4 +1,4 @@
-package nextstep.security.oauth2.authentication;
+package nextstep.security.oauth2.client.registration;
 
 import nextstep.oauth2.OAuth2ClientProperties;
 

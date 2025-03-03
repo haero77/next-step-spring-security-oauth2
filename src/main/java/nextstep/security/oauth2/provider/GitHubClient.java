@@ -1,10 +1,10 @@
 package nextstep.security.oauth2.provider;
 
 import nextstep.security.authentication.AuthenticationException;
-import nextstep.security.oauth2.authentication.ClientRegistration;
-import nextstep.security.oauth2.authentication.OAuth2AccessToken;
-import nextstep.security.oauth2.authentication.OAuth2AuthorizationCode;
-import nextstep.security.oauth2.authentication.OAuth2User;
+import nextstep.security.oauth2.client.registration.ClientRegistration;
+import nextstep.security.oauth2.core.OAuth2AccessToken;
+import nextstep.security.oauth2.core.OAuth2AuthorizationCode;
+import nextstep.security.oauth2.core.user.OAuth2User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
