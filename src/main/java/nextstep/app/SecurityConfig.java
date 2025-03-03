@@ -16,8 +16,13 @@ import nextstep.security.config.DelegatingFilterProxy;
 import nextstep.security.config.FilterChainProxy;
 import nextstep.security.config.SecurityFilterChain;
 import nextstep.security.context.SecurityContextHolderFilter;
+import nextstep.security.oauth2.authentication.OAuth2AuthorizationRequestRedirectFilter;
+import nextstep.security.oauth2.authentication.OAuth2LoginAuthenticationFilter;
+import nextstep.security.oauth2.authentication.OAuth2UserService;
+import nextstep.security.oauth2.provider.OAuth2ClientProperties;
 import nextstep.security.userdetails.UserDetails;
 import nextstep.security.userdetails.UserDetailsService;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -28,6 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 @EnableAspectJAutoProxy
+@EnableConfigurationProperties({OAuth2ClientProperties.class})
 @Configuration
 public class SecurityConfig {
 
@@ -38,13 +44,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public DelegatingFilterProxy delegatingFilterProxy() {
-        return new DelegatingFilterProxy(filterChainProxy(List.of(securityFilterChain())));
-    }
-
-    @Bean
-    public FilterChainProxy filterChainProxy(List<SecurityFilterChain> securityFilterChains) {
-        return new FilterChainProxy(securityFilterChains);
+    public DelegatingFilterProxy delegatingFilterProxy(SecurityFilterChain securityFilterChain) {
+        return new DelegatingFilterProxy(new FilterChainProxy(List.of(securityFilterChain)));
     }
 
     @Bean
@@ -53,10 +54,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain() {
+    public SecurityFilterChain securityFilterChain(OAuth2ClientProperties securityOAuth2Properties, OAuth2UserService oAuth2UserService) {
         return new DefaultSecurityFilterChain(
                 List.of(
                         new SecurityContextHolderFilter(),
+                        new OAuth2AuthorizationRequestRedirectFilter(securityOAuth2Properties),
+                        new OAuth2LoginAuthenticationFilter(securityOAuth2Properties, oAuth2UserService),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
                         new AuthorizationFilter(requestAuthorizationManager())
