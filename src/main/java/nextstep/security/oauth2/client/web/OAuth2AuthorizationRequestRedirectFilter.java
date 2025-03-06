@@ -15,6 +15,7 @@ public class OAuth2AuthorizationRequestRedirectFilter extends GenericFilterBean 
 
     public static final String OAUTH2_LOGIN_REQUEST_URI_PREFIX = "/oauth2/authorization/";
     private final OAuth2AuthorizationRequestResolver authorizationRequestResolver;
+    private final AuthorizationRequestRepository authorizationRequestRepository = new HttpSessionOAuth2AuthorizationRequestRepository();
 
     public OAuth2AuthorizationRequestRedirectFilter(ClientRegistrationRepository clientRegistrationRepository) {
         this.authorizationRequestResolver = new DefaultOAuth2AuthorizationRequestResolver(
@@ -43,6 +44,15 @@ public class OAuth2AuthorizationRequestRedirectFilter extends GenericFilterBean 
         }
 
         OAuth2AuthorizationRequest authorizationRequest = authorizationRequestResolver.resolve(request);
+        sendRedirectForAuthorization(authorizationRequest, request, response);
+    }
+
+    private void sendRedirectForAuthorization(
+            OAuth2AuthorizationRequest authorizationRequest,
+            HttpServletRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        authorizationRequestRepository.saveAuthorizationRequest(authorizationRequest, request, response);
         response.sendRedirect(authorizationRequest.redirectUri());
     }
 
