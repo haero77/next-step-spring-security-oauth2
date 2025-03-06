@@ -31,6 +31,7 @@ public class OAuth2ClientPropertiesMapper {
                             registration.clientId(),
                             registration.clientSecret(),
                             registration.redirectUri(),
+                            registration.scope(),
                             new ClientRegistration.ProviderDetails(
                                     provider.authorizationUri(),
                                     provider.tokenUri(),
