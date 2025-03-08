@@ -7,11 +7,8 @@ import nextstep.security.oauth2.core.user.OAuth2User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.MediaType;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 
@@ -34,31 +31,6 @@ public class GoogleClient implements OAuth2ProviderClient {
     @Override
     public String getProviderName() {
         return GOOGLE;
-    }
-
-    @Override
-    public OAuth2AccessToken fetchAccessToken(ClientRegistration registration, String code) {
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", code);
-        params.add("client_id", registration.clientId());
-        params.add("client_secret", registration.clientSecret());
-        params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/google");
-        params.add("grant_type", "authorization_code");
-
-        RequestEntity<MultiValueMap<String, String>> request = RequestEntity
-                .post(URI.create(registration.providerDetails().tokenUri()))
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(params);
-        logger.info("request: {}", request);
-
-        ResponseEntity<AccessTokenResponse> response = restOperations.exchange(request, AccessTokenResponse.class);
-        logger.info("response: {}", response);
-
-        AccessTokenResponse tokenResponse = Objects.requireNonNullElseGet(response.getBody(), () -> {
-            throw new AuthenticationException("Failed to get access token");
-        });
-
-        return new OAuth2AccessToken(tokenResponse.accessToken());
     }
 
     @Override

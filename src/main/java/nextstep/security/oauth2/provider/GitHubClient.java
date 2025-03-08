@@ -35,17 +35,6 @@ public class GitHubClient implements OAuth2ProviderClient {
     }
 
     @Override
-    public OAuth2AccessToken fetchAccessToken(ClientRegistration registration, String code) {
-        ResponseEntity<AccessTokenResponse> responseEntity = callAccessTokenApi(registration, code);
-
-        AccessTokenResponse tokenResponse = Objects.requireNonNullElseGet(responseEntity.getBody(), () -> {
-            throw new AuthenticationException("Failed to get access token");
-        });
-
-        return new OAuth2AccessToken(tokenResponse.accessToken());
-    }
-
-    @Override
     public OAuth2User fetchUser(ClientRegistration registration, OAuth2AccessToken accessToken) {
         ClientRegistration.ProviderDetails provider = registration.providerDetails();
 
