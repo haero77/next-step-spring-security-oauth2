@@ -15,7 +15,7 @@ public class OAuth2AuthorizationRequestRedirectFilter extends GenericFilterBean 
 
     public static final String OAUTH2_LOGIN_REQUEST_URI_PREFIX = "/oauth2/authorization/";
     private final OAuth2AuthorizationRequestResolver authorizationRequestResolver;
-    private final AuthorizationRequestRepository authorizationRequestRepository = new HttpSessionOAuth2AuthorizationRequestRepository();
+    private final AuthorizationRequestRepository authorizationRequestRepository = HttpSessionOAuth2AuthorizationRequestRepository.getInstance();
 
     public OAuth2AuthorizationRequestRedirectFilter(ClientRegistrationRepository clientRegistrationRepository) {
         this.authorizationRequestResolver = new DefaultOAuth2AuthorizationRequestResolver(
