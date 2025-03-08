@@ -53,7 +53,7 @@
 
 - [x] ClientRegistrationRepository 구현
   - [x] <RegistrationId, ClientRegistration>를 담는 일급 컬렉션 InMemoryClientRegistrationRepository 구현
-  - [x] InMemoryClientRegistrationRepository 빈 등록 시 ClientProperties 주입 받아 초기화
+  - [x] InMemoryClientRegistrationRepository 빈 등록 시 ClientPrlaperties 주입 받아 초기화
 - [x] OAuth2AuthorizationRequestResolver 구현
   - [x] OAuth2AuthorizationRequestResolver 빈 등록 시 ClientRegistrationRepository 주입 받아 초기화
 - [x] AuthorizationRequestRepository 구현
@@ -69,21 +69,19 @@
 > - HttpSessionSecurityContextRepository
 > - Converter와 Converter<OAuth2LoginAuthenticationToken, OAuth2AuthenticationToken>
 
-- [ ] OAuth2LoginAuthenticationFilter 구현
-  - [ ] ClientRegistrationRepository에서 ClientRegistration 조회
-  - [ ] AuthorizationRequestRepository에서 AuthorizationRequest 조회
-  - [ ] OAuth2LoginAuthenticationToken 생성 및 AuthenticationManager로 인증 시도
-- [ ] OAuth2LoginAuthenticationProvider 구현
-  - [ ] OAuth2LoginAuthenticationToken를 support.
-  - [ ] OAuth2AuthorizationCodeAuthenticationProvider로 인증 위임.
-  - [ ] OAuth2AccessTokenResponseClient를 이용하여 액세스 토큰 발급.
-  - [ ] OAuth2UserService를 이용하여 사용자 정보 조회.
-  - [ ] OAuth2User를 이용하여 인증된 OAuth2AuthenticationToken 생성.
-- [ ] GoogleClient, GitHubClient 클래스 삭제
-  - [ ] OAuth2는 프로토콜이므로 플랫폼별 Client는 필요 없다.
-- [ ] 중복 코드 리팩터링
-- [ ] redirect URI를 상수로 관리
-- [ ] authorization URI를 환경변수로 관리
+- [x] OAuth2LoginAuthenticationFilter 구현
+  - [x] ClientRegistrationRepository에서 ClientRegistration 조회
+  - [x] AuthorizationRequestRepository에서 AuthorizationRequest 조회
+  - [x] OAuth2LoginAuthenticationToken 생성 및 AuthenticationManager로 인증 시도
+- [x] OAuth2LoginAuthenticationProvider 구현
+  - [x] OAuth2AuthorizationCodeAuthenticationToken 생성 
+  - [x] OAuth2AuthorizationCodeAuthenticationProvider로 인증 위임.
+  - [x] OAuth2UserService를 이용하여 사용자 정보 조회.
+    - [x] DefaultOAuth2UserService에서 사용자 정보 조회(Google Client, GitHub Client 삭제)
+- [x] OAuth2AuthorizationCodeAuthenticationProvider 구현
+  - [x] OAuth2AccessTokenResponseClient를 이용하여 액세스 토큰 발급.
+    - [x] OAuth2AccessTokenResponseClient 구현
+- [ ] 깨지는 HTTP Session 관련 테스트 수정
 
 ## 2단계 피드백
 
@@ -143,7 +141,7 @@ sequenceDiagram
     af ->> af: extract registrationId from authorizationRequest
     af ->> crr: findByRegistrationId(registartionId)
     crr -->> af: ClientRegistration
-    af ->> af: generates authenticationRequest(=OAuth2LoginAuthenticationToken)<br>with clientRegistration
+    af ->> af: generates authenticationRequest(=OAuth2LoginAuthenticationToken)<br>with clientRegistration, authorizationExchange
 
 %% attempts authentication
     af ->> am: authenticate(authenticationRequest - OAuth2LoginAuthenticationToken)
@@ -197,18 +195,18 @@ sequenceDiagram
 
     %% participants
     participant am as AuthenticationManager
-    participant op as OAuth2LoginAuthenticationProvider<br>👉 Delegate autentication to codeAuthenticationProvider
+    participant lap as OAuth2LoginAuthenticationProvider<br>👉 Delegate autentication to codeAuthenticationProvider
     participant acap as OAuth2AuthorizationCodeAuthenticationProvider<br>👉 Request Exchanging Code To AccessToken
     participant atrc as OAuth2AccessTokenResponseClient<br>(DefaultAuthorizationCodeTokenResponseClient)
     participant us as OAuth2UserService (DefaultOAuth2UserService)
 
     %% start sequences
-    am ->> op: authenticate(authentication)
+    am ->> lap: authenticate(authentication)
 
     %% OAuth2LoginAuthenticationProvider
-    op ->> op: Cast authentcation to OAuth2LoginAuthenticationToken
-    op ->> op: Genenrate 'OAuth2AuthorizationCodeAuthenticationToken'<br>contains clientRegisration & authorizationExchange
-    op ->> acap: authenticate(autentication)
+    lap ->> lap: Cast authentcation to OAuth2LoginAuthenticationToken
+    lap ->> lap: Genenrate 'OAuth2AuthorizationCodeAuthenticationToken'<br>contains clientRegisration & authorizationExchange
+    lap ->> acap: authenticate(autentication)
 
     %% OAuth2AuthorizationCodeAuthenticationProvider
     acap ->> acap: Get OAuth2AuthorizationResponse<br>from authorizationExchange
@@ -221,13 +219,14 @@ sequenceDiagram
     atrc ->> atrc: Exchange request to OAuth2AccessTokenResponse<br>via call Authorization Server endpoint.
     atrc -->> acap: returns tokenResponse    
 
-    %% OAuth2UserService (DefaultOAuth2UserService)
     acap ->> acap: Generate authenticated OAuth2AuthorizationCodeAuthenticationToken
-    acap -->> op: returns OAuth2AuthorizationCodeAuthenticationToken
+    acap -->> lap: returns OAuth2AuthorizationCodeAuthenticationToken
+
+    %% request load user
+    lap ->> lap: Extract AccessToken from OAuth2AuthorizationCodeAuthenticationToken<br>Generate OAuth2UserRequest with AccessToken
+    lap ->> us: loadUser(oauth2UserRequest)
 
     %% UserService
-    op ->> us: loadUser(oauth2UserRequest)
-
     note over us, us: 🚀 Exchange AccessToken to UserInfo<br>via call Resource Server
     us ->> us: Validate UserInfoEndPoints Exists.
     us ->> us: Validate UserNameAttributeName Exists.
@@ -235,10 +234,10 @@ sequenceDiagram
 
     note over us, us: 👨‍💻 Devleper will implement Member Sign up process<br>using CustomOAuth2UserService if needed.
 
-    us ->> op: returns DefaultOAuth2SUser
+    us ->> lap: returns DefaultOAuth2SUser
 
     %% End of OAuth2 authentication
-    op -->> am: Authentication
+    lap -->> am: Authentication
     note over am, am: OAuth2LoginAuthenticationFilter saves SecurityContext<br><End of OAuth2 Authetication>
 ```
 
