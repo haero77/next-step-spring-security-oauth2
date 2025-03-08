@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.oauth2.client.registration.ClientRegistration;
 import nextstep.security.oauth2.client.registration.ClientRegistrationRepository;
+import nextstep.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.lang.Nullable;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -57,6 +58,6 @@ public class DefaultOAuth2AuthorizationRequestResolver implements OAuth2Authoriz
                 .build()
                 .toUriString();
 
-        return new OAuth2AuthorizationRequest(redirectUri);
+        return new OAuth2AuthorizationRequest(registrationId, redirectUri);
     }
 }

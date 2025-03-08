@@ -3,7 +3,6 @@ package nextstep.security.oauth2.provider;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.oauth2.client.registration.ClientRegistration;
 import nextstep.security.oauth2.core.OAuth2AccessToken;
-import nextstep.security.oauth2.core.OAuth2AuthorizationCode;
 import nextstep.security.oauth2.core.user.OAuth2User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,9 +37,9 @@ public class GoogleClient implements OAuth2ProviderClient {
     }
 
     @Override
-    public OAuth2AccessToken fetchAccessToken(ClientRegistration registration, OAuth2AuthorizationCode code) {
+    public OAuth2AccessToken fetchAccessToken(ClientRegistration registration, String code) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("code", code.codeValue());
+        params.add("code", code);
         params.add("client_id", registration.clientId());
         params.add("client_secret", registration.clientSecret());
         params.add("redirect_uri", "http://localhost:8080/login/oauth2/code/google");

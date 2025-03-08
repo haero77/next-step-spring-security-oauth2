@@ -2,6 +2,7 @@ package nextstep.security.oauth2.client.web;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nextstep.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 
 public interface AuthorizationRequestRepository {
 
