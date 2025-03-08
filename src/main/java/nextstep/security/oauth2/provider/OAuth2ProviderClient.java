@@ -8,7 +8,5 @@ public interface OAuth2ProviderClient {
 
     String getProviderName();
 
-    OAuth2AccessToken fetchAccessToken(ClientRegistration registration, String code1);
-
     OAuth2User fetchUser(ClientRegistration registration, OAuth2AccessToken accessToken);
 }

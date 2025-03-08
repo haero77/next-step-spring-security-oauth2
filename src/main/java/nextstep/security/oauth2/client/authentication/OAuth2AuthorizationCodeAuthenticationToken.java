@@ -33,6 +33,14 @@ public class OAuth2AuthorizationCodeAuthenticationToken implements Authenticatio
         return new OAuth2AuthorizationCodeAuthenticationToken(null, clientRegistration, authorizationExchange, false);
     }
 
+    public static OAuth2AuthorizationCodeAuthenticationToken authenticated(
+            OAuth2AccessToken oAuth2AccessToken,
+            ClientRegistration clientRegistration,
+            OAuth2AuthorizationExchange authorizationExchange
+    ) {
+        return new OAuth2AuthorizationCodeAuthenticationToken(oAuth2AccessToken, null, null, true);
+    }
+
     @Override
     public Set<String> getAuthorities() {
         return null;
@@ -55,5 +63,13 @@ public class OAuth2AuthorizationCodeAuthenticationToken implements Authenticatio
 
     public OAuth2AccessToken getAccessToken() {
         return this.accessToken;
+    }
+
+    public ClientRegistration getClientRegistration() {
+        return this.clientRegistration;
+    }
+
+    public OAuth2AuthorizationExchange getAuthorizationExchange() {
+        return this.authorizationExchange;
     }
 }
