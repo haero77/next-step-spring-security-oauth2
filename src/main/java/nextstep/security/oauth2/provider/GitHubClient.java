@@ -3,7 +3,6 @@ package nextstep.security.oauth2.provider;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.oauth2.client.registration.ClientRegistration;
 import nextstep.security.oauth2.core.OAuth2AccessToken;
-import nextstep.security.oauth2.core.OAuth2AuthorizationCode;
 import nextstep.security.oauth2.core.user.OAuth2User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +35,7 @@ public class GitHubClient implements OAuth2ProviderClient {
     }
 
     @Override
-    public OAuth2AccessToken fetchAccessToken(ClientRegistration registration, OAuth2AuthorizationCode code) {
+    public OAuth2AccessToken fetchAccessToken(ClientRegistration registration, String code) {
         ResponseEntity<AccessTokenResponse> responseEntity = callAccessTokenApi(registration, code);
 
         AccessTokenResponse tokenResponse = Objects.requireNonNullElseGet(responseEntity.getBody(), () -> {
@@ -74,13 +73,13 @@ public class GitHubClient implements OAuth2ProviderClient {
         return username::toString;
     }
 
-    private ResponseEntity<AccessTokenResponse> callAccessTokenApi(ClientRegistration registration, OAuth2AuthorizationCode code) {
+    private ResponseEntity<AccessTokenResponse> callAccessTokenApi(ClientRegistration registration, String code) {
         ClientRegistration.ProviderDetails provider = registration.providerDetails();
 
         URI accessTokenUrl = UriComponentsBuilder.fromHttpUrl(provider.tokenUri())
                 .queryParam("client_id", registration.clientId())
                 .queryParam("client_secret", registration.clientSecret())
-                .queryParam("code", code.codeValue())
+                .queryParam("code", code)
                 .build()
                 .toUri();
 

@@ -6,7 +6,6 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import nextstep.oauth2.OAuth2ClientProperties;
 import nextstep.security.authentication.Authentication;
 import nextstep.security.authentication.AuthenticationException;
 import nextstep.security.authentication.AuthenticationManager;
@@ -15,10 +14,14 @@ import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
 import nextstep.security.oauth2.client.authentication.OAuth2AuthenticationProvider;
-import nextstep.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import nextstep.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import nextstep.security.oauth2.client.registration.ClientRegistration;
+import nextstep.security.oauth2.client.registration.ClientRegistrationRepository;
 import nextstep.security.oauth2.client.userinfo.OAuth2UserService;
-import nextstep.security.oauth2.core.OAuth2AuthorizationCode;
+import nextstep.security.oauth2.core.endpoint.OAuth2AuthorizationExchange;
+import nextstep.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+import nextstep.security.oauth2.core.endpoint.OAuth2AuthorizationResponse;
+import nextstep.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -36,13 +39,17 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
 
     private final AuthenticationManager authenticationManager;
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
-    private final OAuth2ClientProperties oAuth2Properties;
+    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final AuthorizationRequestRepository authorizationRequestRepository = HttpSessionOAuth2AuthorizationRequestRepository.getInstance();
 
-    public OAuth2LoginAuthenticationFilter(OAuth2ClientProperties oAuth2Properties, OAuth2UserService userService) {
-        this.oAuth2Properties = oAuth2Properties;
+    public OAuth2LoginAuthenticationFilter(
+            OAuth2UserService userService,
+            ClientRegistrationRepository clientRegistrationRepository
+    ) {
         this.authenticationManager = new ProviderManager(
                 List.of(new OAuth2AuthenticationProvider(userService))
         );
+        this.clientRegistrationRepository = clientRegistrationRepository;
     }
 
     @Override
@@ -64,15 +71,8 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             return;
         }
 
-        String authorizationCode = request.getParameter("code");
-        if (!StringUtils.hasText(authorizationCode)) {
-            logger.error("Authorization code is missing");
-            response.sendError(HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase());
-            return;
-        }
-
         try {
-            Authentication authResult = attemptAuthentication(request, new OAuth2AuthorizationCode(authorizationCode));
+            Authentication authResult = attemptAuthentication(request);
 
             SecurityContext context = SecurityContextHolder.createEmptyContext();
             context.setAuthentication(authResult);
@@ -93,34 +93,34 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
         return request.getRequestURI().startsWith(LOGIN_CALL_BACK_URI_PREFIX);
     }
 
-    private Authentication attemptAuthentication(HttpServletRequest request, OAuth2AuthorizationCode code) {
-        Authentication authRequest = generateUnAuthenticatedToken(request, code);
-        return this.authenticationManager.authenticate(authRequest);
+    private Authentication attemptAuthentication(HttpServletRequest request) {
+        OAuth2AuthorizationRequest authorizationRequest =
+                authorizationRequestRepository.removeAuthorizationRequest(request);
+        OAuth2AuthorizationResponse authorizationResponse = convertToResponse(authorizationRequest, request);
+
+        ClientRegistration registration =
+                clientRegistrationRepository.findByRegistrationId(authorizationRequest.registrationId());
+
+        Authentication authentication = OAuth2LoginAuthenticationToken.unauthenticated(
+                registration,
+                new OAuth2AuthorizationExchange(authorizationRequest, authorizationResponse)
+        );
+
+        return this.authenticationManager.authenticate(authentication);
     }
 
-    private OAuth2AuthenticationToken generateUnAuthenticatedToken(
-            HttpServletRequest request,
-            OAuth2AuthorizationCode code
+    private OAuth2AuthorizationResponse convertToResponse(
+            OAuth2AuthorizationRequest authorizationRequest,
+            HttpServletRequest httpRequest
     ) {
-        String providerName = getProvider(request);
-        OAuth2ClientProperties.Registration registration = oAuth2Properties.getRegistration().get(providerName);
-        if (registration == null) {
-            throw new AuthenticationException("Invalid registration: " + providerName);
+        String authorizationCode = httpRequest.getParameter(OAuth2ParameterNames.CODE);
+        if (!StringUtils.hasText(authorizationCode)) {
+            throw new AuthenticationException("Authorization code is missing");
         }
 
-        OAuth2ClientProperties.Provider provider = oAuth2Properties.getProvider().get(providerName);
-        if (provider == null) {
-            throw new AuthenticationException("Invalid provider: " + providerName);
-        }
-
-        return OAuth2AuthenticationToken.unauthenticated(ClientRegistration.of(registration, provider), code);
-    }
-
-    private String getProvider(HttpServletRequest request) {
-        String provider = request.getRequestURI().substring(LOGIN_CALL_BACK_URI_PREFIX.length());
-        if (!StringUtils.hasText(provider)) {
-            throw new AuthenticationException("Cannot extract provider from request URI");
-        }
-        return provider;
+        return new OAuth2AuthorizationResponse(
+                authorizationRequest.redirectUri(),
+                authorizationCode
+        );
     }
 }

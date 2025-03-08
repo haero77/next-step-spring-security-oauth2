@@ -67,7 +67,7 @@ public class SecurityConfig {
                 List.of(
                         new SecurityContextHolderFilter(),
                         new OAuth2AuthorizationRequestRedirectFilter(clientRegistrationRepository),
-                        new OAuth2LoginAuthenticationFilter(securityOAuth2Properties, oAuth2UserService),
+                        new OAuth2LoginAuthenticationFilter(oAuth2UserService, clientRegistrationRepository),
                         new UsernamePasswordAuthenticationFilter(userDetailsService()),
                         new BasicAuthenticationFilter(userDetailsService()),
                         new AuthorizationFilter(requestAuthorizationManager())

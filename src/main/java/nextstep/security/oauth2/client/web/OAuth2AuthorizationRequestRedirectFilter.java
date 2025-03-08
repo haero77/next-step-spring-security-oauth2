@@ -7,6 +7,7 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import nextstep.security.oauth2.client.registration.ClientRegistrationRepository;
+import nextstep.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.web.filter.GenericFilterBean;
 
 import java.io.IOException;

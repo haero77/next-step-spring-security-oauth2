@@ -20,12 +20,12 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public boolean supports(Class<?> authentication) {
-        return OAuth2AuthenticationToken.class.isAssignableFrom(authentication);
+        return OAuth2LoginAuthenticationToken.class.isAssignableFrom(authentication);
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        OAuth2AuthenticationToken token = (OAuth2AuthenticationToken) authentication;
+        OAuth2LoginAuthenticationToken token = (OAuth2LoginAuthenticationToken) authentication;
 
         OAuth2AccessToken accessToken = exchangeCodeToAccessToken(token);
 
@@ -34,15 +34,18 @@ public class OAuth2AuthenticationProvider implements AuthenticationProvider {
                 accessToken
         ));
 
-        return OAuth2AuthenticationToken.authenticated(oAuth2User.getName());
+        return OAuth2LoginAuthenticationToken.authenticated(oAuth2User);
     }
 
-    private OAuth2AccessToken exchangeCodeToAccessToken(OAuth2AuthenticationToken token) {
+    private OAuth2AccessToken exchangeCodeToAccessToken(OAuth2LoginAuthenticationToken token) {
         OAuth2ProviderClient providerClient = getProviderClient(token);
-        return providerClient.fetchAccessToken(token.getClientRegistration(), token.getAuthorizationCode());
+        return providerClient.fetchAccessToken(
+                token.getClientRegistration(),
+                token.getAuthorizationExchange().authorizationResponse().code()
+        );
     }
 
-    private OAuth2ProviderClient getProviderClient(OAuth2AuthenticationToken token) {
+    private OAuth2ProviderClient getProviderClient(OAuth2LoginAuthenticationToken token) {
         String providerName = token.getClientRegistration().registrationId();
         return OAuth2ProviderClientFactory.INSTANCE.getProviderClient(providerName);
     }
