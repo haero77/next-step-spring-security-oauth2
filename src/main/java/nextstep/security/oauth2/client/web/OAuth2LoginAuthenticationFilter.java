@@ -31,11 +31,11 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.List;
 
-import static nextstep.security.oauth2.provider.Oauth2Constants.LOGIN_CALL_BACK_URI_PREFIX;
-
 public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
 
     private static final Logger logger = LoggerFactory.getLogger(OAuth2LoginAuthenticationFilter.class);
+
+    private static final String LOGIN_CALL_BACK_URI = "/login/oauth2/code/";
 
     private final AuthenticationManager authenticationManager;
     private final HttpSessionSecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
@@ -90,7 +90,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
     }
 
     private boolean matchesPattern(HttpServletRequest request) {
-        return request.getRequestURI().startsWith(LOGIN_CALL_BACK_URI_PREFIX);
+        return request.getRequestURI().startsWith(LOGIN_CALL_BACK_URI);
     }
 
     private Authentication attemptAuthentication(HttpServletRequest request) {
