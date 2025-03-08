@@ -13,7 +13,7 @@ import nextstep.security.authentication.ProviderManager;
 import nextstep.security.context.HttpSessionSecurityContextRepository;
 import nextstep.security.context.SecurityContext;
 import nextstep.security.context.SecurityContextHolder;
-import nextstep.security.oauth2.client.authentication.OAuth2AuthenticationProvider;
+import nextstep.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider;
 import nextstep.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import nextstep.security.oauth2.client.registration.ClientRegistration;
 import nextstep.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -47,7 +47,7 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
             ClientRegistrationRepository clientRegistrationRepository
     ) {
         this.authenticationManager = new ProviderManager(
-                List.of(new OAuth2AuthenticationProvider(userService))
+                List.of(new OAuth2LoginAuthenticationProvider(userService))
         );
         this.clientRegistrationRepository = clientRegistrationRepository;
     }
