@@ -96,6 +96,10 @@ public class OAuth2LoginAuthenticationFilter extends GenericFilterBean {
     private Authentication attemptAuthentication(HttpServletRequest request) {
         OAuth2AuthorizationRequest authorizationRequest =
                 authorizationRequestRepository.removeAuthorizationRequest(request);
+        if (authorizationRequest == null) {
+            throw new AuthenticationException("Authorization request not found");
+        }
+
         OAuth2AuthorizationResponse authorizationResponse = convertToResponse(authorizationRequest, request);
 
         ClientRegistration registration =
